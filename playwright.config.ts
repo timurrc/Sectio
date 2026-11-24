@@ -34,8 +34,7 @@ export default defineConfig({
       name: "demo",
       use: {
         ...devices["Desktop Chrome"],
-        viewport: { width: 1280, height: 800 },
-        video: { mode: "on", size: { width: 1280, height: 800 } },
+        viewport: { width: 1200, height: 750 },
       },
       testMatch: "demo.spec.ts",
     },
