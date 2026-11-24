@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { buildPath, ROUTES } from "@/constants/routes";
+import { type ITemplate, TEMPLATES } from "@/constants/templates";
+import { createDocumentFromTemplate } from "@/editor/templates";
 import { useProjectsStore } from "@/store/projects.store";
 
 export const useProjectsPage = () => {
@@ -11,9 +13,10 @@ export const useProjectsPage = () => {
 
   const openProject = (id: string) => navigate(buildPath(ROUTES.EDITOR, { id }));
 
-  const handleCreate = async () => {
+  /** Без шаблона — пустой проект */
+  const handleCreate = async (template?: ITemplate) => {
     try {
-      openProject(await createProject());
+      openProject(await createProject(template && createDocumentFromTemplate(template)));
     } catch {
       toast.error("Не удалось создать проект");
     }
@@ -27,5 +30,12 @@ export const useProjectsPage = () => {
     }
   };
 
-  return { projects, openProject, handleCreate, handleDelete };
+  return {
+    projects,
+    templates: TEMPLATES,
+    openProject,
+    handleCreate: () => handleCreate(),
+    handleCreateFromTemplate: (template: ITemplate) => handleCreate(template),
+    handleDelete,
+  };
 };
