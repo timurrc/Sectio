@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+/*
+  Дизайн-токены проекта — CSS-переменные.
+  Используются прямо в классах: text-[var(--color-text)], bg-[var(--color-primary)].
+  static — переменные попадают в CSS всегда, даже если класс ещё нигде не использован.
+*/
+@theme static {
+  --color-primary: #aa3bff;
+  --color-primary-hover: #9426ea;
+  --color-text: #08060d;
+  --color-muted: #6b6375;
+  --color-border: #e5e4e7;
+  --color-bg: #ffffff;
+  --color-surface: #f6f5f8;
+  --color-danger: #e5484d;
+
+  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg)] font-sans text-[var(--color-text)] antialiased;
+  }
+}
