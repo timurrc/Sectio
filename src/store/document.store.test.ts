@@ -33,6 +33,14 @@ describe("document.store", () => {
     expect(ids()).toEqual(["a", "c", "b"]);
   });
 
+  it("replaceSections заменяет все секции одним шагом undo", () => {
+    state().insertSection(section("a"));
+    state().replaceSections([section("x"), section("y")]);
+    expect(ids()).toEqual(["x", "y"]);
+    history().undo();
+    expect(ids()).toEqual(["a"]);
+  });
+
   it("moveSection переставляет секцию", () => {
     ["a", "b", "c"].forEach((id) => state().insertSection(section(id)));
     state().moveSection("a", 2);

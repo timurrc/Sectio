@@ -19,6 +19,8 @@ interface DocumentActions {
   setDocument: (document: IDocument | null) => void;
   /** Вставляет готовую секцию на позицию index (по умолчанию — в конец) */
   insertSection: (section: ISection, index?: number) => void;
+  /** Заменяет все секции разом (применение шаблона): один шаг undo */
+  replaceSections: (sections: ISection[]) => void;
   moveSection: (id: string, toIndex: number) => void;
   removeSection: (id: string) => void;
   /** Копия сразу после оригинала; id для копии передаёт вызывающий (nanoid) */
@@ -80,6 +82,11 @@ export const useDocumentStore = create<DocumentStore>()(
           mutate((doc) => {
             const at = clamp(index ?? doc.sections.length, 0, doc.sections.length);
             doc.sections.splice(at, 0, section);
+          }),
+
+        replaceSections: (sections) =>
+          mutate((doc) => {
+            doc.sections = sections;
           }),
 
         moveSection: (id, toIndex) =>
