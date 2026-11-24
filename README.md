@@ -8,9 +8,9 @@
 
 **Русский** · [English](README.en.md)
 
-[Сообщить о баге](../../issues)
+[Демо](https://sectio-navy.vercel.app) · [Changelog](CHANGELOG.md) · [Releases](../../releases) · [Сообщить о баге](../../issues)
 
-![CI](https://img.shields.io/github/actions/workflow/status/timurrc/Sectio/ci.yml?branch=main&label=CI)
+[![CI](https://github.com/timurrc/Sectio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/timurrc/Sectio/actions/workflows/ci.yml)
 
 <img src="docs/demo.gif" width="800" alt="Сборка лендинга в Sectio: шаблон, правка текста, тёмная секция, перетаскивание, палитра ⌘K и код" />
 

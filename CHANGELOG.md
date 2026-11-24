@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.1](https://github.com/timurrc/Sectio/compare/v0.1.0...v0.1.1) (2026-11-24)
+
+### Bug Fixes
+
+- return 404 for missing assets instead of index.html ([1c852c0](https://github.com/timurrc/Sectio/commit/1c852c024ead684ba4d1786283b6f8a3ba8496f7))
+
 ## 0.1.0 (2026-11-24)
 
 ### Features
