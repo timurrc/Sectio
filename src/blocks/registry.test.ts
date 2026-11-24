@@ -31,6 +31,6 @@ describe("defineBlock", () => {
 
 describe("getBlock", () => {
   it("бросает понятную ошибку для незарегистрированного блока", () => {
-    expect(() => getBlock("pricing")).toThrow(/не зарегистрирован/);
+    expect(() => getBlock("faq")).toThrow(/не зарегистрирован/);
   });
 });
