@@ -10,6 +10,15 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
+  build: {
+    rollupOptions: {
+      // Второй entry: превью лендинга, которое грузится в iframe редактора
+      input: {
+        main: fileURLToPath(new URL("./index.html", import.meta.url)),
+        preview: fileURLToPath(new URL("./preview.html", import.meta.url)),
+      },
+    },
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],

@@ -1,29 +1,11 @@
-import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, type AxiosInstance } from "axios";
 import { ENV } from "@/constants/env";
-import { useAuthStore } from "@/store/auth.store";
-
-// Свои флаги в конфиге запроса: api.get(url, { skipAuth: true })
-declare module "axios" {
-  interface AxiosRequestConfig {
-    /** Не подставлять токен и не пытаться обновить его (логин, регистрация, публичные ручки) */
-    skipAuth?: boolean;
-    /** Служебный: запрос уже повторяли после refresh */
-    _retry?: boolean;
-  }
-}
 
 /* ------------------------------------------------------------------ */
 /*  Настройки                                                          */
 /* ------------------------------------------------------------------ */
 
 const BASE_URL = ENV.API_URL;
-const REFRESH_URL = "/auth/refresh"; // ожидается ответ { accessToken: string }
-
-/* ------------------------------------------------------------------ */
-/*  Токен — источник правды zustand (store/auth.store.ts)              */
-/* ------------------------------------------------------------------ */
-
-const getToken = () => useAuthStore.getState().token;
 
 /* ------------------------------------------------------------------ */
 /*  Единый формат ошибки                                               */
@@ -74,7 +56,6 @@ export const isApiError = (value: unknown): value is ApiError =>
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 15_000,
-  withCredentials: true, // refresh-токен обычно лежит в httpOnly cookie
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -82,63 +63,12 @@ export const api: AxiosInstance = axios.create({
 });
 
 /* ------------------------------------------------------------------ */
-/*  REQUEST: подставляем токен                                         */
-/* ------------------------------------------------------------------ */
-
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = getToken();
-  if (token && !config.skipAuth) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-/* ------------------------------------------------------------------ */
-/*  REFRESH: один запрос на обновление, даже если упало 10 запросов    */
-/* ------------------------------------------------------------------ */
-
-let refreshPromise: Promise<string> | null = null;
-
-const refreshAccessToken = (): Promise<string> => {
-  // Отдельный axios без interceptors, чтобы не уйти в бесконечный цикл
-  refreshPromise ??= axios
-    .post<{ accessToken: string }>(REFRESH_URL, null, { baseURL: BASE_URL, withCredentials: true })
-    .then(({ data }) => {
-      useAuthStore.getState().setToken(data.accessToken);
-      return data.accessToken;
-    })
-    .finally(() => {
-      refreshPromise = null;
-    });
-
-  return refreshPromise;
-};
-
-// После logout ProtectedRoute сам уведёт на /login: он подписан на токен в сторе
-const logout = () => useAuthStore.getState().logout();
-
-/* ------------------------------------------------------------------ */
-/*  RESPONSE: 401 → refresh → повтор; остальные ошибки → ApiError      */
+/*  RESPONSE: ошибки → ApiError                                        */
+/*  Бэкенда у Sectio пока нет, поэтому токен и refresh убраны вместе    */
+/*  с auth-стором. Вернёшь авторизацию — добавь interceptors сюда.     */
 /* ------------------------------------------------------------------ */
 
 api.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError<ErrorBody>) => {
-    const original = error.config;
-    const canRefresh =
-      error.response?.status === 401 && original && !original._retry && !original.skipAuth;
-
-    if (canRefresh) {
-      original._retry = true;
-      try {
-        const token = await refreshAccessToken();
-        original.headers.Authorization = `Bearer ${token}`;
-        return api(original);
-      } catch {
-        logout();
-      }
-    }
-
-    return Promise.reject(toApiError(error));
-  },
+  (error: AxiosError<ErrorBody>) => Promise.reject(toApiError(error)),
 );

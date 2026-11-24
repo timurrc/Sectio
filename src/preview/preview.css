@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* Тёмная секция: класс dark на обёртке секции (как и в экспортируемом проекте) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Сами токены (--color-*, --radius, --font) приходят из <style>, который строит themeToCss */
+@layer base {
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text)] antialiased;
+    font-family: var(--font, system-ui, sans-serif);
+  }
+}
+
+/*
+  Рамка выделения и наведения — интерфейс редактора, а не лендинга: в экспорт не попадает.
+  Цвет — акцент редактора, чтобы рамка не сливалась с primary лендинга.
+*/
+[data-section-id] {
+  position: relative;
+}
+
+[data-section-id][data-hovered]::after,
+[data-section-id][data-selected]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  outline: 1px dashed #ff4d00;
+  outline-offset: -1px;
+}
+
+[data-section-id][data-selected]::after {
+  outline: 2px solid #ff4d00;
+  outline-offset: -2px;
+}
+
+[data-section-id][data-selected]::before {
+  content: attr(data-label);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 51;
+  pointer-events: none;
+  padding: 2px 8px;
+  border-bottom-right-radius: 6px;
+  background: #ff4d00;
+  color: #ffffff;
+  font:
+    500 12px/18px Geist,
+    system-ui,
+    sans-serif;
+}
+
+/* Перетаскивание секции в превью: курсор, без выделения текста, исходная секция приглушена */
+[data-section-id] {
+  cursor: grab;
+}
+
+[data-dragging],
+[data-dragging] * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+[data-section-id][data-drag-source] {
+  opacity: 0.4;
+}
