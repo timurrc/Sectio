@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Тёмная секция: класс dark на обёртке секции (как и в экспортируемом проекте) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Сами токены (--color-*, --radius, --font) приходят из <style>, который строит themeToCss */
+@layer base {
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text)] antialiased;
+    font-family: var(--font, system-ui, sans-serif);
+  }
+}
