@@ -51,3 +51,18 @@
     system-ui,
     sans-serif;
 }
+
+/* Перетаскивание секции в превью: курсор, без выделения текста, исходная секция приглушена */
+[data-section-id] {
+  cursor: grab;
+}
+
+[data-dragging],
+[data-dragging] * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+[data-section-id][data-drag-source] {
+  opacity: 0.4;
+}

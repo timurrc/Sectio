@@ -15,6 +15,14 @@ describe("protocol", () => {
     expect(isPreviewMessage(wrap({ type: "hotkey", event: { key: "z" } }))).toBe(true);
   });
 
+  it("сообщения перетаскивания идут из превью, прокрутка — в превью", () => {
+    expect(isPreviewMessage(wrap({ type: "section:drag", id: "a", y: 1 }))).toBe(true);
+    expect(isPreviewMessage(wrap({ type: "section:drop", id: "a", y: 1 }))).toBe(true);
+    expect(isPreviewMessage(wrap({ type: "section:drag-cancel" }))).toBe(true);
+    expect(isParentMessage(wrap({ type: "scroll:by", dy: 10 }))).toBe(true);
+    expect(isPreviewMessage(wrap({ type: "scroll:by", dy: 10 }))).toBe(false);
+  });
+
   it("игнорирует чужие сообщения", () => {
     expect(isPreviewMessage(null)).toBe(false);
     expect(isPreviewMessage("ready")).toBe(false);

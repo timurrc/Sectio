@@ -5,6 +5,7 @@ import { themeToCss } from "@/editor/themeToCss";
 import type { IDocument, ISection } from "@/types/document.types";
 import { onParentMessage, sendToParent } from "./bridge";
 import { collectSectionRects, sectionIdFrom } from "./sectionDom";
+import { startSectionDrag } from "./sectionDrag";
 
 interface SectionViewProps {
   section: ISection;
@@ -64,11 +65,17 @@ const PreviewApp = () => {
         case "hover:set":
           setHoveredId(message.id);
           break;
+        case "scroll:by":
+          window.scrollBy(0, message.dy);
+          break;
       }
     });
     sendToParent({ type: "ready" });
     return off;
   }, []);
+
+  // Секцию можно зажать и перетащить: порядок меняет редактор по section:drop
+  useEffect(() => startSectionDrag(sendToParent), []);
 
   // Клик выбирает секцию; ссылки в превью не должны уводить iframe со страницы
   useEffect(() => {

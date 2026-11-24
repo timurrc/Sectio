@@ -7,7 +7,9 @@ export const PROTOCOL_SOURCE = "sectio" as const;
 export type ParentToPreview =
   | { type: "doc:set"; document: IDocument }
   | { type: "selection:set"; id: string | null }
-  | { type: "hover:set"; id: string | null };
+  | { type: "hover:set"; id: string | null }
+  /** Прокрутить превью: автопрокрутка, пока блок из библиотеки тянут у края холста */
+  | { type: "scroll:by"; dy: number };
 
 /** Положение секции во вьюпорте iframe (px, getBoundingClientRect). Шлётся при рендере, скролле и ресайзе */
 export interface ISectionRect {
@@ -34,6 +36,12 @@ export type PreviewToParent =
   | { type: "section:click"; id: string }
   | { type: "section:hover"; id: string | null }
   | { type: "hotkey"; event: IHotkeyEvent }
+  /** Секцию тянут прямо в превью: y курсора во вьюпорте iframe */
+  | { type: "section:drag"; id: string; y: number }
+  /** Секцию отпустили: родитель переносит её в модели */
+  | { type: "section:drop"; id: string; y: number }
+  /** Перетаскивание отменено (Esc, потеря указателя) */
+  | { type: "section:drag-cancel" }
   /** Props секции не прошли схему, в превью подставлены defaults */
   | { type: "section:invalid"; id: string; blockName: string };
 
@@ -44,7 +52,12 @@ export const wrap = <T extends { type: string }>(message: T): Envelope<T> => ({
   source: PROTOCOL_SOURCE,
 });
 
-const PARENT_TYPES: ParentToPreview["type"][] = ["doc:set", "selection:set", "hover:set"];
+const PARENT_TYPES: ParentToPreview["type"][] = [
+  "doc:set",
+  "selection:set",
+  "hover:set",
+  "scroll:by",
+];
 const PREVIEW_TYPES: PreviewToParent["type"][] = [
   "ready",
   "section:rects",
@@ -52,6 +65,9 @@ const PREVIEW_TYPES: PreviewToParent["type"][] = [
   "section:hover",
   "section:invalid",
   "hotkey",
+  "section:drag",
+  "section:drop",
+  "section:drag-cancel",
 ];
 
 const hasType = (data: unknown, types: string[]): data is { type: string; source: string } =>

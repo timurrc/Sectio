@@ -4,11 +4,13 @@ import { useCanvas } from "./useCanvas";
 
 /**
  * Холст с iframe превью. Пока из библиотеки тянут блок, поверх iframe лежит прозрачная
- * зона сброса (иначе события мыши уходят в iframe) и линия, куда встанет секция.
+ * зона сброса (иначе события мыши уходят в iframe). Линия показывает, куда встанет секция:
+ * и для блока из библиотеки, и для секции, которую тянут прямо в превью.
  * Пустое состояние рисует сам iframe.
  */
 const Canvas = () => {
-  const { iframeRef, viewport, setDropRef, isDraggingBlock, dropLineY } = useCanvas();
+  const { iframeRef, viewport, setDropRef, isDraggingBlock, isDraggingSection, dropLineY } =
+    useCanvas();
   const widthClass = VIEWPORTS.find((item) => item.id === viewport)?.widthClass ?? "w-full";
 
   return (
@@ -24,14 +26,16 @@ const Canvas = () => {
           <div
             ref={setDropRef}
             data-testid="canvas-drop-zone"
-            className="absolute inset-0 overflow-hidden rounded-xl"
-          >
-            {dropLineY !== null && (
-              <div
-                className="pointer-events-none absolute inset-x-3 h-1 -translate-y-1/2 rounded-full bg-[var(--color-primary)] shadow-[0_0_0_3px_var(--color-bg)]"
-                style={{ top: Math.max(dropLineY, 2) }}
-              />
-            )}
+            className="absolute inset-0 rounded-xl"
+          />
+        )}
+        {(isDraggingBlock || isDraggingSection) && dropLineY !== null && (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl">
+            <div
+              data-testid="canvas-drop-line"
+              className="absolute inset-x-3 h-1 -translate-y-1/2 rounded-full bg-[var(--color-primary)] shadow-[0_0_0_3px_var(--color-bg)]"
+              style={{ top: Math.max(dropLineY, 2) }}
+            />
           </div>
         )}
       </div>
