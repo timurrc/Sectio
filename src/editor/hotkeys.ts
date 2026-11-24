@@ -9,7 +9,8 @@ export type HotkeyAction =
   | "moveDown"
   | "selectPrev"
   | "selectNext"
-  | "deselect";
+  | "deselect"
+  | "palette";
 
 /** Подсказки для интерфейса (title кнопок) */
 export const HOTKEY_HINTS: Record<HotkeyAction, string> = {
@@ -22,6 +23,7 @@ export const HOTKEY_HINTS: Record<HotkeyAction, string> = {
   selectPrev: "↑",
   selectNext: "↓",
   deselect: "Esc",
+  palette: "⌘K",
 };
 
 /**
@@ -36,6 +38,7 @@ export const matchHotkey = (event: IHotkeyEvent): HotkeyAction | null => {
     if (key === "z") return event.shiftKey ? "redo" : "undo";
     if (key === "y") return "redo";
     if (key === "d" && !event.shiftKey) return "duplicate";
+    if (key === "k" && !event.shiftKey) return "palette";
     return null;
   }
 

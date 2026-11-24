@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
+import type { BlockType } from "@/types/document.types";
+import { createSection } from "./documentFactory";
 import type { HotkeyAction } from "./hotkeys";
 
 /**
@@ -12,6 +14,25 @@ const sections = () => useDocumentStore.getState().document?.sections ?? [];
 const selectedIndex = () => {
   const { selectedId } = useEditorStore.getState();
   return sections().findIndex((section) => section.id === selectedId);
+};
+
+/** Добавляет секцию после выбранной (или в конец) и выделяет её. Библиотека блоков и ⌘K */
+export const addSection = (type: BlockType, variant?: string) => {
+  const list = sections();
+  const index = selectedIndex();
+  const section = createSection(type, { variant });
+  useDocumentStore.getState().insertSection(section, index === -1 ? list.length : index + 1);
+  useEditorStore.getState().select(section.id);
+  return section.id;
+};
+
+/** Переключает тему секции light ↔ dark */
+export const toggleSectionTheme = (id: string) => {
+  const section = sections().find((item) => item.id === id);
+  if (!section) return;
+  useDocumentStore
+    .getState()
+    .updateSection(id, { theme: section.theme === "dark" ? "light" : "dark" });
 };
 
 export const removeSectionById = (id: string) => {
@@ -70,6 +91,9 @@ export const runHotkeyAction = (action: HotkeyAction): boolean => {
     case "deselect":
       if (!selectedId) return false;
       select(null);
+      return true;
+    case "palette":
+      useEditorStore.getState().setPaletteOpen(true);
       return true;
   }
 

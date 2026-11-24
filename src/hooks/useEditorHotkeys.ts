@@ -13,11 +13,16 @@ export const useEditorHotkeys = (enabled = true) => {
   useEffect(() => {
     if (!enabled) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || isEditable(event.target)) return;
-      // Стрелки и Esc во время перетаскивания принадлежат dnd-kit (сортировка с клавиатуры)
-      if (useEditorStore.getState().isDragging) return;
+      if (event.defaultPrevented) return;
+      const { isDragging, paletteOpen } = useEditorStore.getState();
+      // Стрелки и Esc во время перетаскивания принадлежат dnd-kit (сортировка с клавиатуры),
+      // а при открытой палитре — самой палитре
+      if (isDragging || paletteOpen) return;
       const action = matchHotkey(toHotkeyEvent(event));
-      if (action && runHotkeyAction(action)) event.preventDefault();
+      if (!action) return;
+      // ⌘K открывает палитру и из поля ввода, остальные клавиши там принадлежат полю
+      if (action !== "palette" && isEditable(event.target)) return;
+      if (runHotkeyAction(action)) event.preventDefault();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);

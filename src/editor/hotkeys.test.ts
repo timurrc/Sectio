@@ -27,6 +27,12 @@ describe("matchHotkey", () => {
     expect(press("Escape")).toBe("deselect");
   });
 
+  it("⌘K и Ctrl+K открывают палитру команд", () => {
+    expect(press("k", { metaKey: true })).toBe("palette");
+    expect(press("K", { ctrlKey: true })).toBe("palette");
+    expect(press("k")).toBeNull();
+  });
+
   it("остальное не трогает", () => {
     expect(press("a")).toBeNull();
     expect(press("s", { metaKey: true })).toBeNull();

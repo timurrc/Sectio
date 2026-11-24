@@ -12,12 +12,15 @@ interface EditorState {
   leftPanel: LeftPanel;
   /** Идёт перетаскивание (мышью или с клавиатуры): хоткеи редактора молчат */
   isDragging: boolean;
+  /** Открыта палитра команд ⌘K: хоткеи редактора молчат, клавиши принадлежат палитре */
+  paletteOpen: boolean;
   select: (id: string | null) => void;
   hover: (id: string | null) => void;
   setViewport: (viewport: Viewport) => void;
   setTab: (tab: EditorTab) => void;
   setLeftPanel: (panel: LeftPanel) => void;
   setDragging: (isDragging: boolean) => void;
+  setPaletteOpen: (paletteOpen: boolean) => void;
   /** Сброс при открытии другого проекта */
   reset: () => void;
 }
@@ -29,6 +32,7 @@ const INITIAL = {
   tab: "preview" as EditorTab,
   leftPanel: "blocks" as LeftPanel,
   isDragging: false,
+  paletteOpen: false,
 };
 
 /** Состояние интерфейса редактора. Без истории: выделение и вьюпорт не отменяются через ⌘Z */
@@ -40,5 +44,6 @@ export const useEditorStore = create<EditorState>()((set) => ({
   setTab: (tab) => set({ tab }),
   setLeftPanel: (leftPanel) => set({ leftPanel }),
   setDragging: (isDragging) => set({ isDragging }),
+  setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
   reset: () => set(INITIAL),
 }));

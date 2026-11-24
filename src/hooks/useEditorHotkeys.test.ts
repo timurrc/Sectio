@@ -38,4 +38,17 @@ describe("useEditorHotkeys", () => {
     expect(count()).toBe(1);
     useEditorStore.getState().setDragging(false);
   });
+
+  it("⌘K открывает палитру даже из поля ввода, при открытой палитре хоткеи молчат", () => {
+    renderHook(() => useEditorHotkeys());
+    const input = document.createElement("input");
+    document.body.append(input);
+    fireEvent.keyDown(input, { key: "k", metaKey: true });
+    expect(useEditorStore.getState().paletteOpen).toBe(true);
+
+    fireEvent.keyDown(window, { key: "Delete" });
+    expect(count()).toBe(1);
+    useEditorStore.getState().setPaletteOpen(false);
+    input.remove();
+  });
 });

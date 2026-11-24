@@ -1,4 +1,5 @@
-import { ArrowLeft, Download, ExternalLink, Redo2, SearchX, Undo2 } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, Redo2, Search, SearchX, Undo2 } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import Canvas from "@/components/modules/Editor/Canvas/Canvas";
 import CodeView from "@/components/modules/Editor/CodeView/CodeView";
@@ -15,6 +16,11 @@ import { ROUTES } from "@/constants/routes";
 import { HOTKEY_HINTS } from "@/editor/hotkeys";
 import { EDITOR_TABS, useEditorPage } from "./useEditorPage";
 
+// fuse.js и сама палитра грузятся при первом ⌘K
+const CommandPalette = lazy(
+  () => import("@/components/modules/Editor/CommandPalette/CommandPalette"),
+);
+
 /** Редактор: библиотека и структура слева, холст, справа свойства секции или настройки страницы */
 const EditorPage = () => {
   const {
@@ -30,6 +36,8 @@ const EditorPage = () => {
     canRedo,
     undo,
     redo,
+    paletteOpen,
+    openPalette,
   } = useEditorPage();
 
   if (status === "loading") return <PageLoader />;
@@ -73,6 +81,16 @@ const EditorPage = () => {
           className="w-48 shrink-0"
         />
         {tab === "preview" && <ViewportSwitcher />}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openPalette}
+          aria-keyshortcuts="Meta+K Control+K"
+          title={`Блоки, действия и шаблоны (${HOTKEY_HINTS.palette})`}
+        >
+          <Search className="size-4" aria-hidden />
+          <kbd className="font-sans text-[var(--color-muted)]">{HOTKEY_HINTS.palette}</kbd>
+        </Button>
         <Button
           variant="ghost"
           size="icon"
@@ -132,6 +150,12 @@ const EditorPage = () => {
           )}
         </aside>
       </div>
+
+      {paletteOpen && (
+        <Suspense fallback={null}>
+          <CommandPalette />
+        </Suspense>
+      )}
     </>
   );
 };

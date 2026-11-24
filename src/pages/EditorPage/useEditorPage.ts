@@ -25,6 +25,8 @@ export const useEditorPage = () => {
   const selectedId = useEditorStore((state) => state.selectedId);
   const tab = useEditorStore((state) => state.tab);
   const setTab = useEditorStore((state) => state.setTab);
+  const paletteOpen = useEditorStore((state) => state.paletteOpen);
+  const setPaletteOpen = useEditorStore((state) => state.setPaletteOpen);
   const [exporting, setExporting] = useState<ExportTarget | null>(null);
   // Секция могла исчезнуть (undo добавления) — тогда справа снова настройки страницы
   const selectedSection = useDocumentStore(selectSection(selectedId));
@@ -90,5 +92,7 @@ export const useEditorPage = () => {
     canRedo,
     undo: () => temporal.getState().undo(),
     redo: () => temporal.getState().redo(),
+    paletteOpen,
+    openPalette: () => setPaletteOpen(true),
   };
 };
