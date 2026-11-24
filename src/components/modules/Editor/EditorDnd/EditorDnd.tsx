@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { getBlock } from "@/blocks/registry";
-import type { DragData } from "@/editor/dnd";
+import type { DragData } from "@/core/dnd";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 import type { BlockType } from "@/types/document.types";

@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDndMonitor, useDroppable, type DragMoveEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
-import { runHotkeyAction } from "@/editor/commands";
-import { createSection } from "@/editor/documentFactory";
+import { runHotkeyAction } from "@/core/commands";
+import { createSection } from "@/core/documentFactory";
 import {
   CANVAS_DROP_ID,
   getAutoScrollDelta,
   getDropIndex,
   getSectionMove,
   type DragData,
-} from "@/editor/dnd";
-import { matchHotkey } from "@/editor/hotkeys";
-import { isPreviewMessage, wrap, type ISectionRect, type ParentToPreview } from "@/editor/protocol";
+} from "@/core/dnd";
+import { matchHotkey } from "@/core/hotkeys";
+import { isPreviewMessage, wrap, type ISectionRect, type ParentToPreview } from "@/core/protocol";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 

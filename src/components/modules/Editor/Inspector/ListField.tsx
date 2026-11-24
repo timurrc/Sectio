@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp, ChevronRight, Plus, X } from "lucide-react";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input/Input";
-import { emptyValue, getAt, pathKey, type FieldNode } from "@/editor/schemaFields";
+import { emptyValue, getAt, pathKey, type FieldNode } from "@/core/schemaFields";
 import SchemaField, { type IFieldProps } from "./SchemaField";
 
 type ListNode = Extract<FieldNode, { kind: "list" }>;

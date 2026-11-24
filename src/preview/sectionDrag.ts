@@ -1,5 +1,5 @@
-import { getAutoScrollDelta } from "@/editor/dnd";
-import type { PreviewToParent } from "@/editor/protocol";
+import { getAutoScrollDelta } from "@/core/dnd";
+import type { PreviewToParent } from "@/core/protocol";
 import { sectionIdFrom } from "./sectionDom";
 
 /** На сколько px нужно сдвинуть зажатый указатель, чтобы клик стал перетаскиванием */

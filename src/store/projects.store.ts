@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { createDocument } from "@/editor/documentFactory";
-import { documentStorage } from "@/editor/documentStorage";
-import { notifyProjectsChanged } from "@/editor/projectsSync";
+import { createDocument } from "@/core/documentFactory";
+import { documentStorage } from "@/core/documentStorage";
+import { notifyProjectsChanged } from "@/core/projectsSync";
 import type { IDocument, IProjectMeta } from "@/types/document.types";
 
 interface ProjectsState {

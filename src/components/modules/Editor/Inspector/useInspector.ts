@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { getBlock } from "@/blocks/registry";
-import { issuesToErrors, setAt, getSchemaFields, type FieldPath } from "@/editor/schemaFields";
+import { issuesToErrors, setAt, getSchemaFields, type FieldPath } from "@/core/schemaFields";
 import { useDocumentStore } from "@/store/document.store";
 import type { ISection, SectionTheme } from "@/types/document.types";
 

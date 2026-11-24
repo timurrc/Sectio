@@ -1,9 +1,4 @@
-import {
-  isParentMessage,
-  wrap,
-  type ParentToPreview,
-  type PreviewToParent,
-} from "@/editor/protocol";
+import { isParentMessage, wrap, type ParentToPreview, type PreviewToParent } from "@/core/protocol";
 
 /** Сторона iframe. Принимаем сообщения только от родительского окна нашего origin */
 

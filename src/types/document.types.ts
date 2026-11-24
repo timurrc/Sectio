@@ -42,7 +42,7 @@ export interface IDocument {
   updatedAt: number;
 }
 
-/** Строка в списке проектов: сам документ хранится отдельно (editor/documentStorage.ts) */
+/** Строка в списке проектов: сам документ хранится отдельно (core/documentStorage.ts) */
 export interface IProjectMeta {
   id: string;
   title: string;

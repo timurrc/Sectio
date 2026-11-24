@@ -1,5 +1,5 @@
 import { EXPORT_PATHS } from "@/constants/export";
-import { resolveSection } from "@/editor/resolveSection";
+import { resolveSection } from "@/core/resolveSection";
 import type { IDocument } from "@/types/document.types";
 import { sectionComponentNames } from "./componentNames";
 import type { IGeneratedProject } from "./generateProject";

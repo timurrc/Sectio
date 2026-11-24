@@ -1,7 +1,7 @@
 import Input from "@/components/ui/Input/Input";
 import Switch from "@/components/ui/Switch/Switch";
 import Textarea from "@/components/ui/Textarea/Textarea";
-import { getAt, pathKey, type FieldNode, type FieldPath } from "@/editor/schemaFields";
+import { getAt, pathKey, type FieldNode, type FieldPath } from "@/core/schemaFields";
 import ListField from "./ListField";
 
 export interface IFieldProps {

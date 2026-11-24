@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { matchHotkey, toHotkeyEvent } from "@/editor/hotkeys";
-import { resolveSection } from "@/editor/resolveSection";
-import { themeToCss } from "@/editor/themeToCss";
+import { matchHotkey, toHotkeyEvent } from "@/core/hotkeys";
+import { resolveSection } from "@/core/resolveSection";
+import { themeToCss } from "@/core/themeToCss";
 import type { IDocument, ISection } from "@/types/document.types";
 import { onParentMessage, sendToParent } from "./bridge";
 import { collectSectionRects, sectionIdFrom } from "./sectionDom";

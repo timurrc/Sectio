@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { runHotkeyAction } from "@/editor/commands";
-import { matchHotkey, toHotkeyEvent } from "@/editor/hotkeys";
+import { runHotkeyAction } from "@/core/commands";
+import { matchHotkey, toHotkeyEvent } from "@/core/hotkeys";
 import { useEditorStore } from "@/store/editor.store";
 
 /** В полях ввода клавиши принадлежат полю: ⌘Z, Backspace и стрелки работают как обычно */

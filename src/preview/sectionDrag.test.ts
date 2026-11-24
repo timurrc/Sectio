@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { PreviewToParent } from "@/editor/protocol";
+import type { PreviewToParent } from "@/core/protocol";
 import { DRAG_THRESHOLD, startSectionDrag } from "./sectionDrag";
 
 const send = vi.fn<(message: PreviewToParent) => void>();

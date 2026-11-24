@@ -24,7 +24,7 @@ import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
 import SegmentedControl from "@/components/ui/SegmentedControl/SegmentedControl";
 import { ROUTES } from "@/constants/routes";
-import { HOTKEY_HINTS } from "@/editor/hotkeys";
+import { HOTKEY_HINTS } from "@/core/hotkeys";
 import { EDITOR_MIN_WIDTH, EDITOR_TABS, useEditorPage } from "./useEditorPage";
 
 import { PALETTE_TRIGGER_ATTR } from "@/components/modules/Editor/CommandPalette/useCommandPalette";

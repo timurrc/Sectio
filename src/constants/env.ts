@@ -2,12 +2,16 @@ import { z } from "zod";
 
 /**
  * Переменные окружения проверяются при старте.
- * Нет VITE_API_URL или он не URL — приложение сразу падает с понятной ошибкой,
- * а не ломается позже на первом запросе.
+ * Если VITE_API_URL задан, но не URL — приложение сразу падает с понятной ошибкой,
+ * а не ломается позже на первом запросе. Не задан — берётся значение по умолчанию.
  * В коде используем только ENV, не import.meta.env напрямую.
  */
 const envSchema = z.object({
-  VITE_API_URL: z.url({ message: "должен быть полным URL, например https://api.example.com" }),
+  // Бэкенда у Sectio нет, адрес нужен только инфраструктуре axios на будущее:
+  // без него приложение должно запускаться (деплой на Vercel без переменных)
+  VITE_API_URL: z
+    .url({ message: "должен быть полным URL, например https://api.example.com" })
+    .default("https://api.example.com"),
   VITE_USE_MOCK: z
     .enum(["true", "false"])
     .default("false")

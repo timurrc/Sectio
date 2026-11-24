@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createDocument, createSection } from "@/editor/documentFactory";
-import { buildZip } from "@/editor/exportProject";
+import { createDocument, createSection } from "@/core/documentFactory";
+import { buildZip } from "@/core/exportProject";
 import type { IDocument } from "@/types/document.types";
 import { sectionComponentNames } from "./componentNames";
 import { generateProject } from "./generateProject";
