@@ -1,6 +1,7 @@
-import { ArrowLeft, Redo2, SearchX, Undo2 } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, Redo2, SearchX, Undo2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Canvas from "@/components/modules/Editor/Canvas/Canvas";
+import CodeView from "@/components/modules/Editor/CodeView/CodeView";
 import EditorDnd from "@/components/modules/Editor/EditorDnd/EditorDnd";
 import Inspector from "@/components/modules/Editor/Inspector/Inspector";
 import LeftPanel from "@/components/modules/Editor/LeftPanel/LeftPanel";
@@ -9,13 +10,27 @@ import ViewportSwitcher from "@/components/modules/Editor/ViewportSwitcher/Viewp
 import EmptyState from "@/components/ui/EmptyState/EmptyState";
 import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
+import SegmentedControl from "@/components/ui/SegmentedControl/SegmentedControl";
 import { ROUTES } from "@/constants/routes";
 import { HOTKEY_HINTS } from "@/editor/hotkeys";
-import { useEditorPage } from "./useEditorPage";
+import { EDITOR_TABS, useEditorPage } from "./useEditorPage";
 
 /** Редактор: библиотека и структура слева, холст, справа свойства секции или настройки страницы */
 const EditorPage = () => {
-  const { status, document, selectedSection, canUndo, canRedo, undo, redo } = useEditorPage();
+  const {
+    status,
+    document,
+    selectedSection,
+    tab,
+    setTab,
+    exporting,
+    downloadZip,
+    openStackBlitz,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+  } = useEditorPage();
 
   if (status === "loading") return <PageLoader />;
 
@@ -50,7 +65,14 @@ const EditorPage = () => {
           <ArrowLeft className="size-4" aria-hidden />
         </Link>
         <h1 className="flex-1 truncate font-semibold">{document.meta.title}</h1>
-        <ViewportSwitcher />
+        <SegmentedControl
+          label="Режим"
+          value={tab}
+          items={EDITOR_TABS}
+          onChange={setTab}
+          className="w-48 shrink-0"
+        />
+        {tab === "preview" && <ViewportSwitcher />}
         <Button
           variant="ghost"
           size="icon"
@@ -71,8 +93,25 @@ const EditorPage = () => {
         >
           <Redo2 className="size-4" aria-hidden />
         </Button>
-        {/* Место под главное действие; экспорт подключается на этапе 3 */}
-        <Button size="sm" disabled title="Экспорт появится на этапе 3">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openStackBlitz}
+          isLoading={exporting === "stackblitz"}
+          disabled={exporting !== null}
+          title="Открыть проект в StackBlitz в новой вкладке"
+        >
+          {exporting !== "stackblitz" && <ExternalLink className="size-4" aria-hidden />}
+          StackBlitz
+        </Button>
+        <Button
+          size="sm"
+          onClick={downloadZip}
+          isLoading={exporting === "zip"}
+          disabled={exporting !== null}
+          title="Скачать проект Vite + React + Tailwind zip-архивом"
+        >
+          {exporting !== "zip" && <Download className="size-4" aria-hidden />}
           Экспорт
         </Button>
       </header>
@@ -80,7 +119,7 @@ const EditorPage = () => {
       <div className="flex min-h-0 flex-1">
         <EditorDnd>
           <LeftPanel />
-          <Canvas />
+          {tab === "preview" ? <Canvas /> : <CodeView />}
         </EditorDnd>
         <aside
           aria-label={selectedSection ? "Свойства секции" : "Настройки страницы"}
