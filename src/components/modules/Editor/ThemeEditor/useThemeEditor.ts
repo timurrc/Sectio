@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { contrast, deriveHover, MIN_CONTRAST } from "@/editor/color";
+import { contrast, deriveHover, MIN_CONTRAST } from "@/core/color";
 import { useDocumentStore } from "@/store/document.store";
 import type { IThemeTokens, SectionTheme } from "@/types/document.types";
 

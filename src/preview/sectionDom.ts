@@ -1,4 +1,4 @@
-import type { ISectionRect } from "@/editor/protocol";
+import type { ISectionRect } from "@/core/protocol";
 
 /** id секции, внутри которой находится элемент (или null) */
 export const sectionIdFrom = (target: EventTarget | null): string | null =>

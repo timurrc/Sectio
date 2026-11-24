@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { isHexColor } from "@/editor/color";
+import { isHexColor } from "@/core/color";
 import { cn } from "@/utils/cn";
 
 interface ColorFieldProps {

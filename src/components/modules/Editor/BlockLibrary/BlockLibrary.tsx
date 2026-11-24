@@ -1,7 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import { BLOCKS, type AnyBlockDefinition } from "@/blocks/registry";
-import { addSection } from "@/editor/commands";
-import type { DragData } from "@/editor/dnd";
+import { addSection } from "@/core/commands";
+import type { DragData } from "@/core/dnd";
 import BlockThumbnail from "./BlockThumbnail";
 
 const LibraryCard = ({ block }: { block: AnyBlockDefinition }) => {

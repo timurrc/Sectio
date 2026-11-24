@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createDocument, createSection } from "@/editor/documentFactory";
-import { wrap, type ParentToPreview } from "@/editor/protocol";
+import { createDocument, createSection } from "@/core/documentFactory";
+import { wrap, type ParentToPreview } from "@/core/protocol";
 import type { IDocument } from "@/types/document.types";
 import PreviewApp from "./PreviewApp";
 

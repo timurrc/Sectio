@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { buildPath, ROUTES } from "@/constants/routes";
 import { type ITemplate, TEMPLATES } from "@/constants/templates";
-import { subscribeProjectsChanged } from "@/editor/projectsSync";
-import { createDocumentFromTemplate } from "@/editor/templates";
+import { subscribeProjectsChanged } from "@/core/projectsSync";
+import { createDocumentFromTemplate } from "@/core/templates";
 import { useProjectsStore } from "@/store/projects.store";
 
 export const useProjectsPage = () => {

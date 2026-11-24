@@ -53,7 +53,7 @@ Opens at `http://localhost:5173`. Checks: `bun run check` (lint, format, unit te
 ```
 src/
 ├── blocks/       # block registry: component, zod schema, codegen — one folder per block
-├── editor/       # editor logic: storage, preview protocol, DnD, commands, templates
+├── core/         # editor logic: storage, preview protocol, DnD, commands, templates
 ├── codegen/      # builds the exported Vite project
 ├── preview/      # standalone preview page for the iframe
 ├── store/        # zustand: document with history, editor state, projects

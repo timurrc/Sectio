@@ -1,6 +1,6 @@
 import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from "react";
-import { getPaletteItems, type IPaletteItem } from "@/editor/palette";
-import { searchItems } from "@/editor/search";
+import { getPaletteItems, type IPaletteItem } from "@/core/palette";
+import { searchItems } from "@/core/search";
 import { useEditorStore } from "@/store/editor.store";
 
 /** Атрибут кнопки, открывающей палитру: на неё возвращается фокус */

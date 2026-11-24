@@ -1,8 +1,8 @@
 import { ArrowDown, ArrowUp, Copy, Trash2, X } from "lucide-react";
 import Button from "@/components/ui/Button/Button";
 import SegmentedControl from "@/components/ui/SegmentedControl/SegmentedControl";
-import { duplicateSectionById, moveSectionBy, removeSectionById } from "@/editor/commands";
-import { HOTKEY_HINTS } from "@/editor/hotkeys";
+import { duplicateSectionById, moveSectionBy, removeSectionById } from "@/core/commands";
+import { HOTKEY_HINTS } from "@/core/hotkeys";
 import { useEditorStore } from "@/store/editor.store";
 import type { ISection, SectionTheme } from "@/types/document.types";
 import SchemaField from "./SchemaField";

@@ -1,5 +1,5 @@
 import { EXPORT_DEPENDENCIES, EXPORT_DEV_DEPENDENCIES } from "@/constants/export";
-import { themeToCss } from "@/editor/themeToCss";
+import { themeToCss } from "@/core/themeToCss";
 import type { IDocument } from "@/types/document.types";
 
 /**

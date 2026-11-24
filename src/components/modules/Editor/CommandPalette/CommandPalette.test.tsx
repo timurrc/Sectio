@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createDocument, createSection } from "@/editor/documentFactory";
+import { createDocument, createSection } from "@/core/documentFactory";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 import CommandPalette from "./CommandPalette";

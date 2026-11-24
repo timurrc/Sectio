@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createDocument } from "@/editor/documentFactory";
+import { createDocument } from "@/core/documentFactory";
 import type { ISection } from "@/types/document.types";
 import { HISTORY_GROUP_MS, useDocumentStore } from "./document.store";
 

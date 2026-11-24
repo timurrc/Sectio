@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createDocument, createSection } from "@/editor/documentFactory";
+import { createDocument, createSection } from "@/core/documentFactory";
 import { useDocumentStore } from "@/store/document.store";
 import type { BlockType, ISection } from "@/types/document.types";
 import Inspector from "./Inspector";

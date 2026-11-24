@@ -1,7 +1,7 @@
 import { clear, set } from "idb-keyval";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createDocument } from "@/editor/documentFactory";
-import { documentStorage } from "@/editor/documentStorage";
+import { createDocument } from "@/core/documentFactory";
+import { documentStorage } from "@/core/documentStorage";
 import { useProjectsStore } from "./projects.store";
 
 const state = () => useProjectsStore.getState();
