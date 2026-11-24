@@ -3,11 +3,20 @@ import ProjectCard from "@/components/modules/ProjectCard/ProjectCard";
 import TemplateGallery from "@/components/modules/TemplateGallery/TemplateGallery";
 import Button from "@/components/ui/Button/Button";
 import EmptyState from "@/components/ui/EmptyState/EmptyState";
+import PageLoader from "@/components/ui/PageLoader/PageLoader";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useProjectsPage } from "./useProjectsPage";
 
 const ProjectsPage = () => {
-  const { projects, templates, openProject, handleCreate, handleCreateFromTemplate, handleDelete } =
-    useProjectsPage();
+  const {
+    projects,
+    loaded,
+    templates,
+    openProject,
+    handleCreate,
+    handleCreateFromTemplate,
+    handleDelete,
+  } = useProjectsPage();
 
   const gallery = (
     <section aria-labelledby="templates-title" className="flex flex-col gap-4">
@@ -17,6 +26,10 @@ const ProjectsPage = () => {
       <TemplateGallery templates={templates} onSelect={handleCreateFromTemplate} />
     </section>
   );
+
+  useDocumentTitle();
+
+  if (!loaded) return <PageLoader />;
 
   if (projects.length === 0) {
     return (

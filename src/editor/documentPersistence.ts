@@ -1,18 +1,38 @@
+import { BLOCKS } from "@/blocks/registry";
 import type { IDocument } from "@/types/document.types";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 import { useProjectsStore } from "@/store/projects.store";
 import { documentStorage } from "./documentStorage";
+import { notifyProjectsChanged } from "./projectsSync";
 
 const SAVE_DELAY_MS = 400;
 
-/** Загружает проект из IndexedDB в стор. false — такого проекта нет */
-export const openDocument = async (id: string): Promise<boolean> => {
-  const document = await documentStorage.load(id);
-  if (!document) return false;
+export type OpenResult =
+  | {
+      status: "ok";
+      /** Типы секций, которых нет в реестре блоков: такие секции не открываются */
+      skippedTypes: string[];
+    }
+  | { status: "not-found" }
+  | { status: "corrupt" };
+
+/** Загружает проект из IndexedDB в стор */
+export const openDocument = async (id: string): Promise<OpenResult> => {
+  const loaded = await documentStorage.load(id);
+  if (loaded.status !== "ok") return loaded;
+
+  const { document } = loaded;
+  const sections = document.sections.filter((section) => section.type in BLOCKS);
+  const skippedTypes = [
+    ...new Set(
+      document.sections.filter((section) => !(section.type in BLOCKS)).map(({ type }) => type),
+    ),
+  ];
+
   useEditorStore.getState().reset();
-  useDocumentStore.getState().setDocument(document);
-  return true;
+  useDocumentStore.getState().setDocument({ ...document, sections });
+  return { status: "ok", skippedTypes };
 };
 
 /**
@@ -28,12 +48,17 @@ export const startDocumentAutosave = (): (() => void) => {
     if (!pending) return;
     const document = pending;
     pending = null;
-    void documentStorage.save(document);
+    void documentStorage.save(document).then(() => notifyProjectsChanged({ id: document.id }));
     useProjectsStore.getState().touchProject({
       id: document.id,
       title: document.meta.title,
       updatedAt: document.updatedAt,
     });
+  };
+
+  // Перезагрузка, закрытие вкладки и уход в фон не ждут таймер: пишем сразу
+  const flushOnHide = () => {
+    if (window.document.visibilityState === "hidden") flush();
   };
 
   const unsubscribe = useDocumentStore.subscribe((state, prev) => {
@@ -46,8 +71,13 @@ export const startDocumentAutosave = (): (() => void) => {
     timer = setTimeout(flush, SAVE_DELAY_MS);
   });
 
+  window.addEventListener("pagehide", flush);
+  window.document.addEventListener("visibilitychange", flushOnHide);
+
   return () => {
     unsubscribe();
+    window.removeEventListener("pagehide", flush);
+    window.document.removeEventListener("visibilitychange", flushOnHide);
     flush(); // не теряем правки последних 400 мс при уходе со страницы
   };
 };

@@ -1,18 +1,15 @@
-import { del, get, set } from "idb-keyval";
 import { create } from "zustand";
-import { createJSONStorage, persist, type StateStorage } from "zustand/middleware";
-import { documentStorage } from "@/editor/documentStorage";
 import { createDocument } from "@/editor/documentFactory";
+import { documentStorage } from "@/editor/documentStorage";
+import { notifyProjectsChanged } from "@/editor/projectsSync";
 import type { IDocument, IProjectMeta } from "@/types/document.types";
-
-const idbStorage: StateStorage = {
-  getItem: async (name) => (await get<string>(name)) ?? null,
-  setItem: (name, value) => set(name, value),
-  removeItem: (name) => del(name),
-};
 
 interface ProjectsState {
   projects: IProjectMeta[];
+  /** Список уже прочитан из IndexedDB (до этого пустой список — не «проектов нет») */
+  loaded: boolean;
+  /** Перечитывает список из IndexedDB: при открытии страницы и после правок в другой вкладке */
+  load: () => Promise<void>;
   /** Создаёт документ (пустой или готовый, например из шаблона), сохраняет его и возвращает id */
   createProject: (document?: IDocument) => Promise<string>;
   renameProject: (id: string, title: string) => Promise<void>;
@@ -27,45 +24,49 @@ const toMeta = (document: IDocument): IProjectMeta => ({
   updatedAt: document.updatedAt,
 });
 
-/** Список проектов в IndexedDB. Сами документы — в documentStorage */
-export const useProjectsStore = create<ProjectsState>()(
-  persist(
-    (setState) => ({
-      projects: [],
+/**
+ * Список проектов. Источник — сами документы в IndexedDB (documentStorage.list),
+ * отдельной записи со списком нет: так вкладки не затирают проекты друг друга.
+ */
+export const useProjectsStore = create<ProjectsState>()((setState) => ({
+  projects: [],
+  loaded: false,
 
-      createProject: async (document = createDocument()) => {
-        await documentStorage.save(document);
-        setState((state) => ({ projects: [toMeta(document), ...state.projects] }));
-        return document.id;
-      },
+  load: async () => {
+    const projects = await documentStorage.list();
+    setState({ projects, loaded: true });
+  },
 
-      renameProject: async (id, title) => {
-        const updatedAt = Date.now();
-        const document = await documentStorage.load(id);
-        if (document) {
-          await documentStorage.save({ ...document, meta: { ...document.meta, title }, updatedAt });
-        }
-        setState((state) => ({
-          projects: state.projects.map((project) =>
-            project.id === id ? { ...project, title, updatedAt } : project,
-          ),
-        }));
-      },
+  createProject: async (document = createDocument()) => {
+    await documentStorage.save(document);
+    setState((state) => ({ projects: [toMeta(document), ...state.projects] }));
+    notifyProjectsChanged({ id: document.id });
+    return document.id;
+  },
 
-      touchProject: (meta) =>
-        setState((state) => ({
-          projects: state.projects.map((project) => (project.id === meta.id ? meta : project)),
-        })),
+  renameProject: async (id, title) => {
+    const updatedAt = Date.now();
+    const loaded = await documentStorage.load(id);
+    if (loaded.status === "ok") {
+      const { document } = loaded;
+      await documentStorage.save({ ...document, meta: { ...document.meta, title }, updatedAt });
+      notifyProjectsChanged({ id });
+    }
+    setState((state) => ({
+      projects: state.projects.map((project) =>
+        project.id === id ? { ...project, title, updatedAt } : project,
+      ),
+    }));
+  },
 
-      deleteProject: async (id) => {
-        await documentStorage.remove(id);
-        setState((state) => ({ projects: state.projects.filter((project) => project.id !== id) }));
-      },
-    }),
-    {
-      name: "sectio:projects",
-      storage: createJSONStorage(() => idbStorage),
-      partialize: (state) => ({ projects: state.projects }),
-    },
-  ),
-);
+  touchProject: (meta) =>
+    setState((state) => ({
+      projects: state.projects.map((project) => (project.id === meta.id ? meta : project)),
+    })),
+
+  deleteProject: async (id) => {
+    await documentStorage.remove(id);
+    setState((state) => ({ projects: state.projects.filter((project) => project.id !== id) }));
+    notifyProjectsChanged({ id });
+  },
+}));
