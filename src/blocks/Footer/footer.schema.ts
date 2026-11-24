@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { linkSchema } from "../shared/link";
 
 export const footerSchema = z.object({
   brand: z.string().min(1).meta({ label: "Название бренда" }),
@@ -11,7 +12,7 @@ export const footerSchema = z.object({
           .array(
             z.object({
               label: z.string().min(1).meta({ label: "Текст" }),
-              href: z.string().meta({ label: "Адрес" }),
+              href: linkSchema().meta({ label: "Адрес" }),
             }),
           )
           .meta({ label: "Ссылки", itemLabel: "Ссылка" }),
