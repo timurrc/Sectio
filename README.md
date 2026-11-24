@@ -4,39 +4,39 @@
 
 # Sectio
 
-React-приложение на Vite с типизированным API-слоем, моками и готовым CI.
+Визуальный конструктор лендингов: собираете страницу из секций и выгружаете готовый проект на Vite + React + Tailwind.
 
 **Русский** · [English](README.en.md)
 
-[Changelog](CHANGELOG.md) · [Releases](../../releases) · [Сообщить о баге](../../issues)
+[Сообщить о баге](../../issues)
 
 ![CI](https://img.shields.io/github/actions/workflow/status/timurrc/Sectio/ci.yml?branch=main&label=CI)
-![Version](https://img.shields.io/github/v/tag/timurrc/Sectio?label=version)
 
-<img src="docs/screenshot.png" width="800" alt="Главный экран Sectio" />
+<img src="docs/demo.gif" width="800" alt="Сборка лендинга в Sectio: шаблон, правка текста, тёмная секция, перетаскивание, палитра ⌘K и код" />
 
 </div>
 
 ## Как это работает
 
-Страницы загружаются лениво, данные запрашиваются через TanStack Query и сервисы поверх одного axios-инстанса. В режиме разработки запросы перехватывает MSW, поэтому бэкенд не нужен.
+Страница — это JSON-документ: список секций с данными и тема. Библиотека блоков, перетаскивание, инспектор, палитра ⌘K, шаблоны и undo меняют только его. Превью в iframe, вкладка «Код» и экспорт в zip или StackBlitz только читают документ, поэтому код всегда совпадает с тем, что видно на холсте. Всё хранится в IndexedDB браузера, бэкенда нет.
 
 ```mermaid
 flowchart LR
-    P[Page] --> H[usePage hook]
-    H --> Q[TanStack Query]
-    Q --> S[Service]
-    S --> A[axios instance]
-    A --> M{VITE_USE_MOCK}
-    M -- true --> W[MSW handlers]
-    M -- false --> B[(Backend API)]
+    U[Библиотека · DnD · инспектор · ⌘K · шаблоны] --> S[document.store<br/>undo/redo]
+    S --> D[(IDocument)]
+    D --> DB[(IndexedDB)]
+    D -- postMessage --> P[Превью в iframe]
+    D --> C[Кодогенерация<br/>Babel AST + Prettier]
+    C --> Z[Код · zip · StackBlitz]
 ```
+
+<img src="docs/screenshot.png" width="800" alt="Редактор Sectio: библиотека блоков, превью и свойства секции" />
 
 ## Стек
 
 [![Stack](https://skillicons.dev/icons?i=react,ts,vite,tailwind,bun)](https://skillicons.dev)
 
-TanStack Query · zustand · react-hook-form · zod · react-router · axios · MSW · Vitest · Playwright
+zustand + immer + zundo · dnd-kit · zod · Babel · Prettier · Monaco · JSZip · StackBlitz SDK · fuse.js · culori · idb-keyval · Vitest · Playwright · axe
 
 ## Быстрый старт
 
@@ -46,24 +46,24 @@ bun install && cp .env.example .env
 bun dev
 ```
 
-Откроется на `http://localhost:5173`.
+Откроется на `http://localhost:5173`. Проверки: `bun run check` (lint, формат, unit, сборка) и `bun run e2e`.
 
 ## Структура проекта
 
 ```
 src/
-├── api/          # axios instance
-├── blocks/       # реестр блоков: схема, превью и кодогенерация в одном модуле
-├── editor/       # логика редактора: хранение, фабрики, протокол превью
-├── services/     # запросы к API
-├── hooks/        # общие хуки
-├── schemas/      # zod-схемы форм
-├── store/        # zustand
-├── mocks/        # MSW
-├── pages/        # страницы и их хуки
+├── blocks/       # реестр блоков: компонент, zod-схема, кодогенерация — по папке на блок
+├── editor/       # логика редактора: хранение, протокол превью, DnD, команды, шаблоны
+├── codegen/      # сборка экспортируемого Vite-проекта
+├── preview/      # отдельная страница превью для iframe
+├── store/        # zustand: документ с историей, состояние редактора, проекты
+├── pages/        # список проектов и редактор, логика в useXxxPage
 ├── components/   # ui · modules · layouts
-├── constants/    # env, routes, queryKeys
+├── constants/    # шаблоны, тема по умолчанию, версии зависимостей экспорта
+├── hooks/        # общие хуки
+├── types/        # модель документа
 └── utils/        # чистые функции
+e2e/              # сценарии Playwright и запись demo.gif (bun run demo)
 ```
 
 ## Автор
