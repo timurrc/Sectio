@@ -1,11 +1,14 @@
 import { ArrowLeft, Redo2, Undo2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import BlockLibrary from "@/components/modules/Editor/BlockLibrary/BlockLibrary";
+import Canvas from "@/components/modules/Editor/Canvas/Canvas";
+import ViewportSwitcher from "@/components/modules/Editor/ViewportSwitcher/ViewportSwitcher";
 import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
 import { ROUTES } from "@/constants/routes";
 import { useEditorPage } from "./useEditorPage";
 
-/** Каркас редактора. Канвас, инспектор и палитра подключаются на следующих этапах */
+/** Редактор. Инспектор, Outline, ⌘K и DnD подключаются на следующих этапах */
 const EditorPage = () => {
   const { status, document, canUndo, canRedo, undo, redo } = useEditorPage();
 
@@ -33,6 +36,7 @@ const EditorPage = () => {
           <ArrowLeft className="size-4" aria-hidden />
         </Link>
         <h1 className="flex-1 truncate font-medium">{document.meta.title}</h1>
+        <ViewportSwitcher />
         <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo} aria-label="Отменить">
           <Undo2 className="size-4" aria-hidden />
         </Button>
@@ -41,9 +45,10 @@ const EditorPage = () => {
         </Button>
       </header>
 
-      <main className="flex flex-1 items-center justify-center text-[var(--color-muted)]">
-        Секций: {document.sections.length}
-      </main>
+      <div className="flex min-h-0 flex-1">
+        <BlockLibrary />
+        <Canvas />
+      </div>
     </>
   );
 };
