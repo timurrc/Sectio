@@ -1,10 +1,14 @@
 import type { BlockType } from "@/types/document.types";
 import { type AnyBlockDefinition, defineBlock } from "./defineBlock";
 import { ctaBlock } from "./Cta/cta.block";
+import { faqBlock } from "./Faq/faq.block";
 import { featuresBlock } from "./Features/features.block";
 import { footerBlock } from "./Footer/footer.block";
 import { heroBlock } from "./Hero/hero.block";
+import { logosBlock } from "./Logos/logos.block";
+import { navbarBlock } from "./Navbar/navbar.block";
 import { pricingBlock } from "./Pricing/pricing.block";
+import { testimonialsBlock } from "./Testimonials/testimonials.block";
 
 export { defineBlock };
 export type {
@@ -19,9 +23,13 @@ export type {
  * Больше нигде ничего добавлять не нужно.
  */
 const BLOCK_LIST: AnyBlockDefinition[] = [
+  navbarBlock,
   heroBlock,
+  logosBlock,
   featuresBlock,
+  testimonialsBlock,
   pricingBlock,
+  faqBlock,
   ctaBlock,
   footerBlock,
 ];

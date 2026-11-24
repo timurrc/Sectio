@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
+import type { BlockType } from "@/types/document.types";
 import { defineBlock, getBlock } from "./registry";
 
 const schema = z.object({ title: z.string().min(1) });
@@ -31,6 +32,6 @@ describe("defineBlock", () => {
 
 describe("getBlock", () => {
   it("бросает понятную ошибку для незарегистрированного блока", () => {
-    expect(() => getBlock("faq")).toThrow(/не зарегистрирован/);
+    expect(() => getBlock("unknown" as BlockType)).toThrow(/не зарегистрирован/);
   });
 });

@@ -8,8 +8,18 @@ const blocks = Object.values(BLOCKS);
 const sources = import.meta.glob("./*/*.tsx", { query: "?raw", import: "default", eager: true });
 
 describe("реестр блоков", () => {
-  it("содержит блоки этапа 1", () => {
-    expect(Object.keys(BLOCKS).sort()).toEqual(["cta", "features", "footer", "hero", "pricing"]);
+  it("содержит все типы блоков", () => {
+    expect(Object.keys(BLOCKS).sort()).toEqual([
+      "cta",
+      "faq",
+      "features",
+      "footer",
+      "hero",
+      "logos",
+      "navbar",
+      "pricing",
+      "testimonials",
+    ]);
   });
 
   describe.each(blocks.map((block) => [block.type, block] as const))("%s", (_, block) => {
