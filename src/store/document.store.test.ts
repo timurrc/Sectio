@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createDocument } from "@/editor/documentFactory";
 import type { ISection } from "@/types/document.types";
-import { useDocumentStore } from "./document.store";
+import { HISTORY_GROUP_MS, useDocumentStore } from "./document.store";
 
 const section = (id: string, props: unknown = { title: id }): ISection => ({
   id,
@@ -100,5 +100,58 @@ describe("document.store", () => {
     state().setDocument(null);
     state().insertSection(section("a"));
     expect(state().document).toBeNull();
+  });
+
+  describe("группировка истории", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      state().insertSection(section("a", { title: "" }));
+    });
+    afterEach(() => vi.useRealTimers());
+
+    const title = () => (state().document?.sections[0].props as { title: string }).title;
+
+    it("быстрые правки props одной секции — один шаг undo", () => {
+      ["К", "Ко", "Кофе"].forEach((value) => {
+        state().updateSectionProps("a", { title: value });
+        vi.advanceTimersByTime(100);
+      });
+      history().undo();
+      expect(title()).toBe("");
+    });
+
+    it("пауза дольше интервала начинает новый шаг", () => {
+      state().updateSectionProps("a", { title: "Кофе" });
+      vi.advanceTimersByTime(HISTORY_GROUP_MS + 1);
+      state().updateSectionProps("a", { title: "Кофейня" });
+      history().undo();
+      expect(title()).toBe("Кофе");
+    });
+
+    it("правки разных секций и разных групп не склеиваются", () => {
+      state().insertSection(section("b"));
+      state().updateSectionProps("a", { title: "A" });
+      state().updateSectionProps("b", { title: "B" });
+      state().updateThemeTokens("light", { primary: "#000000" });
+      history().undo();
+      history().undo();
+      expect(title()).toBe("A");
+    });
+
+    it("после undo правка той же группы — новый шаг", () => {
+      state().updateSectionProps("a", { title: "1" });
+      history().undo();
+      state().updateSectionProps("a", { title: "2" });
+      expect(history().futureStates).toHaveLength(0);
+      history().undo();
+      expect(title()).toBe("");
+    });
+
+    it("структурные экшены всегда отдельный шаг", () => {
+      state().insertSection(section("b"));
+      state().insertSection(section("c"));
+      history().undo();
+      expect(ids()).toEqual(["a", "b"]);
+    });
   });
 });
