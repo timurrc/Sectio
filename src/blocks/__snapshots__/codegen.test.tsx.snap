@@ -1,0 +1,554 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`codegen cta > вариант banner > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Готовы начать?",
+  subtitle: "Создайте первую страницу прямо сейчас — это бесплатно.",
+  ctaLabel: "Создать лендинг",
+  ctaHref: "#",
+};
+
+const Section = () => {
+  const { title, subtitle, ctaLabel, ctaHref } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)]">
+      <Container>
+        <div className="flex flex-col items-center gap-4 rounded-[var(--radius)] bg-[var(--color-primary)] px-8 py-16 text-center text-[var(--color-bg)]">
+          <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+          {subtitle && <p className="max-w-xl opacity-80">{subtitle}</p>}
+          <a
+            href={ctaHref}
+            className="mt-2 rounded-[var(--radius)] bg-[var(--color-bg)] px-6 py-3 font-medium text-[var(--color-primary)] transition-opacity hover:opacity-90"
+          >
+            {ctaLabel}
+          </a>
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen cta > вариант simple > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Готовы начать?",
+  subtitle: "Создайте первую страницу прямо сейчас — это бесплатно.",
+  ctaLabel: "Создать лендинг",
+  ctaHref: "#",
+};
+
+const Section = () => {
+  const { title, subtitle, ctaLabel, ctaHref } = content;
+  return (
+    <section className="border-y border-[var(--color-border)] bg-[var(--color-surface)] py-20 text-[var(--color-text)]">
+      <Container className="flex flex-col items-center gap-4 text-center">
+        <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+        {subtitle && <p className="max-w-xl text-[var(--color-muted)]">{subtitle}</p>}
+        <a
+          href={ctaHref}
+          className="mt-2 rounded-[var(--radius)] bg-[var(--color-primary)] px-6 py-3 font-medium text-[var(--color-bg)] transition-colors hover:bg-[var(--color-primary-hover)]"
+        >
+          {ctaLabel}
+        </a>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen features > вариант grid > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Всё, что нужно для старта",
+  subtitle: "Короткий рассказ о том, чем продукт полезен.",
+  items: [
+    {
+      title: "Быстро",
+      description: "Первая версия страницы готова за несколько минут.",
+    },
+    {
+      title: "Гибко",
+      description: "Меняйте тексты, цвета и порядок секций без кода.",
+    },
+    {
+      title: "Чисто",
+      description: "Экспортируйте проект, который приятно читать и дорабатывать.",
+    },
+  ],
+};
+
+const Section = () => {
+  const { title, subtitle, items } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)]">
+      <Container>
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+          {subtitle && <p className="mt-4 text-[var(--color-muted)]">{subtitle}</p>}
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-[var(--radius)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
+            >
+              <span className="mb-4 flex size-10 items-center justify-center rounded-full bg-[var(--color-primary)] font-medium text-[var(--color-bg)]">
+                {index + 1}
+              </span>
+              <h3 className="mb-2 text-lg font-medium">{item.title}</h3>
+              <p className="text-[var(--color-muted)]">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen features > вариант list > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Всё, что нужно для старта",
+  subtitle: "Короткий рассказ о том, чем продукт полезен.",
+  items: [
+    {
+      title: "Быстро",
+      description: "Первая версия страницы готова за несколько минут.",
+    },
+    {
+      title: "Гибко",
+      description: "Меняйте тексты, цвета и порядок секций без кода.",
+    },
+    {
+      title: "Чисто",
+      description: "Экспортируйте проект, который приятно читать и дорабатывать.",
+    },
+  ],
+};
+
+const Section = () => {
+  const { title, subtitle, items } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)]">
+      <Container className="grid gap-12 lg:grid-cols-[1fr_2fr]">
+        <div>
+          <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+          {subtitle && <p className="mt-4 text-[var(--color-muted)]">{subtitle}</p>}
+        </div>
+        <ul className="divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+          {items.map((item, index) => (
+            <li key={index} className="flex gap-5 py-6">
+              <span className="font-medium text-[var(--color-primary)]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 className="text-lg font-medium">{item.title}</h3>
+                <p className="mt-1 text-[var(--color-muted)]">{item.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen footer > вариант columns > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  brand: "Sectio",
+  tagline: "Лендинги из готовых секций.",
+  columns: [
+    {
+      title: "Продукт",
+      links: [
+        {
+          label: "Возможности",
+          href: "#",
+        },
+        {
+          label: "Тарифы",
+          href: "#",
+        },
+      ],
+    },
+    {
+      title: "Компания",
+      links: [
+        {
+          label: "О нас",
+          href: "#",
+        },
+        {
+          label: "Контакты",
+          href: "#",
+        },
+      ],
+    },
+  ],
+  copyright: "© 2026 Sectio. Все права защищены.",
+};
+
+const Section = () => {
+  const { brand, tagline, columns, copyright } = content;
+  return (
+    <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface)] py-12 text-[var(--color-text)]">
+      <Container>
+        <div className="flex flex-col gap-10 md:flex-row md:justify-between">
+          <div className="max-w-xs">
+            <span className="text-lg font-semibold">{brand}</span>
+            {tagline && <p className="mt-2 text-sm text-[var(--color-muted)]">{tagline}</p>}
+          </div>
+          <div className="flex flex-wrap gap-12">
+            {columns.map((column, index) => (
+              <div key={index}>
+                <h3 className="mb-3 text-sm font-medium">{column.title}</h3>
+                <ul className="flex flex-col gap-2 text-sm text-[var(--color-muted)]">
+                  {column.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <a
+                        href={link.href}
+                        className="transition-colors hover:text-[var(--color-text)]"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="mt-10 border-t border-[var(--color-border)] pt-6 text-sm text-[var(--color-muted)]">
+          {copyright}
+        </p>
+      </Container>
+    </footer>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen footer > вариант minimal > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  brand: "Sectio",
+  copyright: "© 2026 Sectio. Все права защищены.",
+};
+
+const Section = () => {
+  const { brand, copyright } = content;
+  return (
+    <footer className="border-t border-[var(--color-border)] bg-[var(--color-bg)] py-8 text-[var(--color-text)]">
+      <Container className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+        <span className="font-semibold">{brand}</span>
+        <span className="text-sm text-[var(--color-muted)]">{copyright}</span>
+      </Container>
+    </footer>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen hero > вариант centered > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  eyebrow: "Новое",
+  title: "Запустите лендинг за один вечер",
+  subtitle: "Соберите страницу из готовых секций, настройте цвета и получите чистый код.",
+  ctaLabel: "Попробовать бесплатно",
+  ctaHref: "#",
+  secondaryLabel: "Узнать больше",
+  secondaryHref: "#",
+};
+
+const Section = () => {
+  const { eyebrow, title, subtitle, ctaLabel, ctaHref, secondaryLabel, secondaryHref } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-24 text-[var(--color-text)] sm:py-32">
+      <Container className="flex flex-col items-center gap-6 text-center">
+        {eyebrow && (
+          <span className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-sm text-[var(--color-muted)]">
+            {eyebrow}
+          </span>
+        )}
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-6xl">{title}</h1>
+        <p className="max-w-2xl text-lg text-[var(--color-muted)]">{subtitle}</p>
+        <div className="flex justify-center">
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={ctaHref}
+              className="rounded-[var(--radius)] bg-[var(--color-primary)] px-6 py-3 font-medium text-[var(--color-bg)] transition-colors hover:bg-[var(--color-primary-hover)]"
+            >
+              {ctaLabel}
+            </a>
+            {secondaryLabel && (
+              <a
+                href={secondaryHref}
+                className="rounded-[var(--radius)] border border-[var(--color-border)] px-6 py-3 font-medium transition-colors hover:bg-[var(--color-surface)]"
+              >
+                {secondaryLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen hero > вариант split > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  eyebrow: "Новое",
+  title: "Запустите лендинг за один вечер",
+  subtitle: "Соберите страницу из готовых секций, настройте цвета и получите чистый код.",
+  ctaLabel: "Попробовать бесплатно",
+  ctaHref: "#",
+  secondaryLabel: "Узнать больше",
+  secondaryHref: "#",
+};
+
+const Section = () => {
+  const { eyebrow, title, subtitle, ctaLabel, ctaHref, secondaryLabel, secondaryHref } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)] sm:py-24">
+      <Container className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="flex flex-col items-start gap-6">
+          {eyebrow && (
+            <span className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-sm text-[var(--color-muted)]">
+              {eyebrow}
+            </span>
+          )}
+          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
+          <p className="text-lg text-[var(--color-muted)]">{subtitle}</p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={ctaHref}
+              className="rounded-[var(--radius)] bg-[var(--color-primary)] px-6 py-3 font-medium text-[var(--color-bg)] transition-colors hover:bg-[var(--color-primary-hover)]"
+            >
+              {ctaLabel}
+            </a>
+            {secondaryLabel && (
+              <a
+                href={secondaryHref}
+                className="rounded-[var(--radius)] border border-[var(--color-border)] px-6 py-3 font-medium transition-colors hover:bg-[var(--color-surface)]"
+              >
+                {secondaryLabel}
+              </a>
+            )}
+          </div>
+        </div>
+        <div
+          aria-hidden
+          className="aspect-[4/3] rounded-[var(--radius)] border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-primary)]/25 to-[var(--color-surface)]"
+        />
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen pricing > вариант cards > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Простые и понятные тарифы",
+  subtitle: "Начните бесплатно, переходите на платный план, когда будете готовы.",
+  plans: [
+    {
+      name: "Старт",
+      price: "0 ₽",
+      period: "/мес",
+      description: "Для первых экспериментов",
+      features: ["1 проект", "Базовые блоки", "Экспорт в zip"],
+      ctaLabel: "Начать",
+      highlighted: false,
+    },
+    {
+      name: "Про",
+      price: "990 ₽",
+      period: "/мес",
+      description: "Для небольших команд",
+      features: ["Безлимит проектов", "Все блоки", "Свои цвета и шрифты"],
+      ctaLabel: "Выбрать Про",
+      highlighted: true,
+    },
+    {
+      name: "Бизнес",
+      price: "2 990 ₽",
+      period: "/мес",
+      description: "Для агентств",
+      features: ["Всё из Про", "Командная работа", "Приоритетная поддержка"],
+      ctaLabel: "Связаться",
+      highlighted: false,
+    },
+  ],
+};
+
+const Section = () => {
+  const { title, subtitle, plans } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)]">
+      <Container>
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+          {subtitle && <p className="mt-4 text-[var(--color-muted)]">{subtitle}</p>}
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {plans.map((plan, index) => (
+            <div
+              key={index}
+              className={\`flex flex-col rounded-[var(--radius)] border bg-[var(--color-surface)] p-8 \${plan.highlighted ? "border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]" : "border-[var(--color-border)]"}\`}
+            >
+              <h3 className="text-lg font-medium">{plan.name}</h3>
+              <p className="mt-1 text-sm text-[var(--color-muted)]">{plan.description}</p>
+              <p className="mt-6">
+                <span className="text-4xl font-semibold">{plan.price}</span>
+                <span className="text-[var(--color-muted)]">{plan.period}</span>
+              </p>
+              <ul className="mt-6 flex flex-1 flex-col gap-2 text-sm">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex gap-2">
+                    <span className="text-[var(--color-primary)]">✓</span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#"
+                className="mt-8 rounded-[var(--radius)] bg-[var(--color-primary)] px-5 py-3 text-center font-medium text-[var(--color-bg)] transition-colors hover:bg-[var(--color-primary-hover)]"
+              >
+                {plan.ctaLabel}
+              </a>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;
+
+exports[`codegen pricing > вариант table > файл секции совпадает со snapshot 1`] = `
+"import Container from "../components/Container";
+
+const content = {
+  title: "Простые и понятные тарифы",
+  subtitle: "Начните бесплатно, переходите на платный план, когда будете готовы.",
+  plans: [
+    {
+      name: "Старт",
+      price: "0 ₽",
+      period: "/мес",
+      description: "Для первых экспериментов",
+      features: ["1 проект", "Базовые блоки", "Экспорт в zip"],
+      ctaLabel: "Начать",
+      highlighted: false,
+    },
+    {
+      name: "Про",
+      price: "990 ₽",
+      period: "/мес",
+      description: "Для небольших команд",
+      features: ["Безлимит проектов", "Все блоки", "Свои цвета и шрифты"],
+      ctaLabel: "Выбрать Про",
+      highlighted: true,
+    },
+    {
+      name: "Бизнес",
+      price: "2 990 ₽",
+      period: "/мес",
+      description: "Для агентств",
+      features: ["Всё из Про", "Командная работа", "Приоритетная поддержка"],
+      ctaLabel: "Связаться",
+      highlighted: false,
+    },
+  ],
+};
+
+const Section = () => {
+  const { title, subtitle, plans } = content;
+  return (
+    <section className="bg-[var(--color-bg)] py-20 text-[var(--color-text)]">
+      <Container>
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="text-3xl font-semibold sm:text-4xl">{title}</h2>
+          {subtitle && <p className="mt-4 text-[var(--color-muted)]">{subtitle}</p>}
+        </div>
+        <div className="divide-y divide-[var(--color-border)] overflow-hidden rounded-[var(--radius)] border border-[var(--color-border)]">
+          {plans.map((plan, index) => (
+            <div
+              key={index}
+              className={\`grid items-center gap-4 p-6 md:grid-cols-[1fr_2fr_auto] \${plan.highlighted ? "bg-[var(--color-surface)]" : ""}\`}
+            >
+              <div>
+                <h3 className="text-lg font-medium">{plan.name}</h3>
+                <p className="text-sm text-[var(--color-muted)]">{plan.description}</p>
+              </div>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-muted)]">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex}>✓ {feature}</li>
+                ))}
+              </ul>
+              <div className="flex items-center gap-4">
+                <div>
+                  <span className="text-2xl font-semibold">{plan.price}</span>
+                  <span className="text-[var(--color-muted)]">{plan.period}</span>
+                </div>
+                <a
+                  href="#"
+                  className="rounded-[var(--radius)] bg-[var(--color-primary)] px-5 py-2.5 font-medium text-[var(--color-bg)] transition-colors hover:bg-[var(--color-primary-hover)]"
+                >
+                  {plan.ctaLabel}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+};
+
+export default Section;
+"
+`;

@@ -1,4 +1,3 @@
-import { codegenNotImplemented } from "../shared/codegenStub";
 import { defineBlock } from "../defineBlock";
 import Features from "./Features";
 import { FEATURES_DEFAULTS, FEATURES_TAGS, FEATURES_VARIANTS } from "./features.constants";
@@ -12,5 +11,5 @@ export const featuresBlock = defineBlock({
   schema: featuresSchema,
   defaults: FEATURES_DEFAULTS,
   Component: Features,
-  codegen: codegenNotImplemented("features"),
+  codegen: () => import("./features.codegen"),
 });

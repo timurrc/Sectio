@@ -1,4 +1,3 @@
-import { codegenNotImplemented } from "../shared/codegenStub";
 import { defineBlock } from "../defineBlock";
 import Hero from "./Hero";
 import { HERO_DEFAULTS, HERO_TAGS, HERO_VARIANTS } from "./hero.constants";
@@ -12,5 +11,5 @@ export const heroBlock = defineBlock({
   schema: heroSchema,
   defaults: HERO_DEFAULTS,
   Component: Hero,
-  codegen: codegenNotImplemented("hero"),
+  codegen: () => import("./hero.codegen"),
 });

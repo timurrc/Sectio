@@ -1,4 +1,3 @@
-import { codegenNotImplemented } from "../shared/codegenStub";
 import { defineBlock } from "../defineBlock";
 import Footer from "./Footer";
 import { FOOTER_DEFAULTS, FOOTER_TAGS, FOOTER_VARIANTS } from "./footer.constants";
@@ -12,5 +11,5 @@ export const footerBlock = defineBlock({
   schema: footerSchema,
   defaults: FOOTER_DEFAULTS,
   Component: Footer,
-  codegen: codegenNotImplemented("footer"),
+  codegen: () => import("./footer.codegen"),
 });

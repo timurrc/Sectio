@@ -8,6 +8,13 @@ export interface IBlockVariant {
   name: string;
 }
 
+/**
+ * Кодогенерация секции: операторы файла — `const content = {...}` с данными и компонент `name`
+ * выбранного варианта. Импорт Container и `export default` добавляет codegen/sectionFile.
+ * Разметка обязана совпадать с Component (тест blocks/codegen.test.tsx).
+ */
+export type BlockCodegen<TProps> = (props: TProps, variant: string, name: string) => t.Statement[];
+
 export interface IBlockComponentProps<TProps> {
   props: TProps;
   variant: string;
@@ -27,8 +34,8 @@ export interface IBlockDefinition<TSchema extends z.ZodType = z.ZodType> {
   defaults: z.infer<TSchema>;
   /** Рендер в превью */
   Component: ComponentType<IBlockComponentProps<z.infer<TSchema>>>;
-  /** Операторы файла секции: константы с данными + компонент. Разметка = разметке Component */
-  codegen: (props: z.infer<TSchema>, variant: string) => t.Statement[];
+  /** Ленивая загрузка codegen: Babel грузится только для вкладки «Код» и экспорта */
+  codegen: () => Promise<{ default: BlockCodegen<z.infer<TSchema>> }>;
 }
 
 /** Проверяет блок при объявлении: defaults обязаны проходить схему, variants не пустой */

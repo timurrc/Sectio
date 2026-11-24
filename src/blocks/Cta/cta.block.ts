@@ -1,4 +1,3 @@
-import { codegenNotImplemented } from "../shared/codegenStub";
 import { defineBlock } from "../defineBlock";
 import Cta from "./Cta";
 import { CTA_DEFAULTS, CTA_TAGS, CTA_VARIANTS } from "./cta.constants";
@@ -12,5 +11,5 @@ export const ctaBlock = defineBlock({
   schema: ctaSchema,
   defaults: CTA_DEFAULTS,
   Component: Cta,
-  codegen: codegenNotImplemented("cta"),
+  codegen: () => import("./cta.codegen"),
 });

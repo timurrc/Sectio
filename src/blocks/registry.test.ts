@@ -12,7 +12,7 @@ const base = {
   schema,
   defaults: { title: "Привет" },
   Component: () => null,
-  codegen: () => [],
+  codegen: async () => ({ default: () => [] }),
 };
 
 describe("defineBlock", () => {
