@@ -56,9 +56,14 @@ export const startDocumentAutosave = (): (() => void) => {
     });
   };
 
-  // Перезагрузка, закрытие вкладки и уход в фон не ждут таймер: пишем сразу
+  // Перезагрузка, закрытие вкладки и уход в фон не ждут таймер: пишем сразу.
+  // IndexedDB может не успеть до выгрузки, поэтому сначала синхронная страховка
   const flushOnHide = () => {
-    if (window.document.visibilityState === "hidden") flush();
+    if (pending) documentStorage.stashUnsaved(pending);
+    flush();
+  };
+  const flushOnHidden = () => {
+    if (window.document.visibilityState === "hidden") flushOnHide();
   };
 
   const unsubscribe = useDocumentStore.subscribe((state, prev) => {
@@ -71,13 +76,13 @@ export const startDocumentAutosave = (): (() => void) => {
     timer = setTimeout(flush, SAVE_DELAY_MS);
   });
 
-  window.addEventListener("pagehide", flush);
-  window.document.addEventListener("visibilitychange", flushOnHide);
+  window.addEventListener("pagehide", flushOnHide);
+  window.document.addEventListener("visibilitychange", flushOnHidden);
 
   return () => {
     unsubscribe();
-    window.removeEventListener("pagehide", flush);
-    window.document.removeEventListener("visibilitychange", flushOnHide);
+    window.removeEventListener("pagehide", flushOnHide);
+    window.document.removeEventListener("visibilitychange", flushOnHidden);
     flush(); // не теряем правки последних 400 мс при уходе со страницы
   };
 };

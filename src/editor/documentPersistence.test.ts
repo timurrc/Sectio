@@ -81,6 +81,17 @@ describe("startDocumentAutosave", () => {
     stop();
   });
 
+  it("при закрытии вкладки правка синхронно попадает в localStorage", async () => {
+    const { id, stop } = await openAndEdit();
+
+    window.dispatchEvent(new Event("pagehide"));
+
+    // Без единого await: страница может выгрузиться сразу после обработчика
+    expect(localStorage.getItem(`sectio:unsaved:${id}`)).toContain("После");
+    vi.useRealTimers();
+    stop();
+  });
+
   it("уход вкладки в фон сохраняет правку сразу", async () => {
     const { id, stop } = await openAndEdit();
     const visibility = vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
@@ -91,5 +102,33 @@ describe("startDocumentAutosave", () => {
 
     await vi.waitFor(async () => expect(await savedTitle(id)).toBe("После"));
     stop();
+  });
+});
+
+describe("страховка в localStorage", () => {
+  it("свежая страховка побеждает IndexedDB, дописывается туда и удаляется", async () => {
+    const document = createDocument("До");
+    await documentStorage.save({ ...document, updatedAt: 1 });
+    documentStorage.stashUnsaved({
+      ...document,
+      meta: { ...document.meta, title: "После" },
+      updatedAt: 2,
+    });
+
+    expect(await documentStorage.list()).toMatchObject([{ id: document.id, title: "После" }]);
+    expect(await savedTitle(document.id)).toBe("После");
+    expect(localStorage.getItem(`sectio:unsaved:${document.id}`)).toBeNull();
+  });
+
+  it("устаревшая страховка игнорируется", async () => {
+    const document = createDocument("Новое");
+    documentStorage.stashUnsaved({
+      ...document,
+      meta: { ...document.meta, title: "Старое" },
+      updatedAt: 1,
+    });
+    await set(`sectio:doc:${document.id}`, { ...document, updatedAt: 2 });
+
+    expect(await savedTitle(document.id)).toBe("Новое");
   });
 });
