@@ -53,6 +53,8 @@ Opens at `http://localhost:5173`.
 ```
 src/
 ├── api/          # axios instance
+├── blocks/       # block registry: schema, preview and codegen in one module
+├── editor/       # editor logic: storage, factories, preview protocol
 ├── services/     # API requests
 ├── hooks/        # shared hooks
 ├── schemas/      # zod form schemas
