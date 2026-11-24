@@ -1,8 +1,9 @@
-import { ArrowLeft, Redo2, Undo2 } from "lucide-react";
+import { ArrowLeft, Redo2, SearchX, Undo2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import BlockLibrary from "@/components/modules/Editor/BlockLibrary/BlockLibrary";
 import Canvas from "@/components/modules/Editor/Canvas/Canvas";
 import ViewportSwitcher from "@/components/modules/Editor/ViewportSwitcher/ViewportSwitcher";
+import EmptyState from "@/components/ui/EmptyState/EmptyState";
 import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
 import { ROUTES } from "@/constants/routes";
@@ -16,11 +17,20 @@ const EditorPage = () => {
 
   if (status === "not-found" || !document) {
     return (
-      <section className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <p className="text-[var(--color-muted)]">Проект не найден</p>
-        <Link to={ROUTES.HOME} className="text-[var(--color-primary)]">
-          К списку проектов
-        </Link>
+      <section className="flex flex-1 items-center justify-center">
+        <EmptyState
+          icon={SearchX}
+          title="Проект не найден"
+          description="Возможно, он был удалён или открыт в другом браузере."
+          action={
+            <Link
+              to={ROUTES.HOME}
+              className="inline-flex h-10 items-center rounded-full bg-[var(--color-primary)] px-5 font-medium text-white hover:bg-[var(--color-primary-hover)]"
+            >
+              К списку проектов
+            </Link>
+          }
+        />
       </section>
     );
   }
@@ -35,13 +45,29 @@ const EditorPage = () => {
         >
           <ArrowLeft className="size-4" aria-hidden />
         </Link>
-        <h1 className="flex-1 truncate font-medium">{document.meta.title}</h1>
+        <h1 className="flex-1 truncate font-semibold">{document.meta.title}</h1>
         <ViewportSwitcher />
-        <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo} aria-label="Отменить">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={undo}
+          disabled={!canUndo}
+          aria-label="Отменить"
+        >
           <Undo2 className="size-4" aria-hidden />
         </Button>
-        <Button variant="ghost" size="sm" onClick={redo} disabled={!canRedo} aria-label="Повторить">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={redo}
+          disabled={!canRedo}
+          aria-label="Повторить"
+        >
           <Redo2 className="size-4" aria-hidden />
+        </Button>
+        {/* Место под главное действие; экспорт подключается на этапе 3 */}
+        <Button size="sm" disabled title="Экспорт появится на этапе 3">
+          Экспорт
         </Button>
       </header>
 

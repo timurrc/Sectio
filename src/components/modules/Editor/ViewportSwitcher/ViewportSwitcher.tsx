@@ -10,7 +10,7 @@ const ViewportSwitcher = () => {
     <div
       role="group"
       aria-label="Размер превью"
-      className="flex gap-1 rounded-lg border border-[var(--color-border)] p-1"
+      className="flex gap-1 rounded-full border border-[var(--color-border)] p-1"
     >
       {VIEWPORTS.map(({ id, label, icon: Icon }) => (
         <button
@@ -20,7 +20,7 @@ const ViewportSwitcher = () => {
           aria-pressed={viewport === id}
           onClick={() => setViewport(id)}
           className={cn(
-            "flex size-7 items-center justify-center rounded-md text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)]",
+            "flex size-7 items-center justify-center rounded-full text-[var(--color-muted)] transition-colors hover:text-[var(--color-text)]",
             viewport === id && "bg-[var(--color-surface)] text-[var(--color-text)]",
           )}
         >
