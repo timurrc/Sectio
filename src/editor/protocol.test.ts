@@ -11,6 +11,8 @@ describe("protocol", () => {
     expect(isParentMessage(wrap({ type: "hover:set", id: null }))).toBe(true);
     expect(isParentMessage(wrap({ type: "ready" }))).toBe(false);
     expect(isPreviewMessage(wrap({ type: "doc:set" }))).toBe(false);
+    expect(isPreviewMessage(wrap({ type: "section:click", id: "a" }))).toBe(true);
+    expect(isPreviewMessage(wrap({ type: "hotkey", event: { key: "z" } }))).toBe(true);
   });
 
   it("игнорирует чужие сообщения", () => {
