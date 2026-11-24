@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { BLOCKS } from "@/blocks/registry";
 import { matchHotkey, toHotkeyEvent } from "@/editor/hotkeys";
+import { resolveSection } from "@/editor/resolveSection";
 import { themeToCss } from "@/editor/themeToCss";
 import type { IDocument, ISection } from "@/types/document.types";
 import { onParentMessage, sendToParent } from "./bridge";
@@ -18,22 +18,19 @@ interface SectionViewProps {
  * data-selected / data-hovered — только рамка редактора (preview.css), в экспорт не попадают.
  */
 const SectionView = ({ section, isSelected, isHovered }: SectionViewProps) => {
-  const block = BLOCKS[section.type];
-  const parsed = useMemo(() => block?.schema.safeParse(section.props), [block, section.props]);
-  const isInvalid = parsed?.success === false;
+  const resolved = useMemo(() => resolveSection(section), [section]);
+  const isInvalid = resolved?.isValid === false;
+  const blockName = resolved?.block.name;
 
   useEffect(() => {
-    if (isInvalid && block) {
-      sendToParent({ type: "section:invalid", id: section.id, blockName: block.name });
+    if (isInvalid && blockName) {
+      sendToParent({ type: "section:invalid", id: section.id, blockName });
     }
-  }, [isInvalid, block, section.id]);
+  }, [isInvalid, blockName, section.id]);
 
-  if (!block) return null;
+  if (!resolved) return null;
 
-  const props = parsed?.success ? parsed.data : block.defaults;
-  const variant = block.variants.some((item) => item.id === section.variant)
-    ? section.variant
-    : block.variants[0].id;
+  const { block, props, variant } = resolved;
   const Component = block.Component;
 
   return (
