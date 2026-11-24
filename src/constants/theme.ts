@@ -23,3 +23,28 @@ export const DEFAULT_THEME_DARK: IThemeTokens = {
   radius: "0.75rem",
   font: "Inter, system-ui, sans-serif",
 };
+
+/** Цвета, которые правятся в редакторе темы. primaryHover подбирается из primary автоматически */
+export const THEME_COLOR_FIELDS: { key: keyof IThemeTokens; label: string }[] = [
+  { key: "primary", label: "Акцент" },
+  { key: "text", label: "Текст" },
+  { key: "muted", label: "Второстепенный текст" },
+  { key: "bg", label: "Фон" },
+  { key: "surface", label: "Фон карточек" },
+  { key: "border", label: "Границы" },
+];
+
+export const RADIUS_PRESETS = [
+  { id: "0rem", label: "Нет" },
+  { id: "0.375rem", label: "S" },
+  { id: "0.75rem", label: "M" },
+  { id: "1.25rem", label: "L" },
+];
+
+/** Системные стеки: превью не грузит веб-шрифты, подключение шрифта — задача экспорта */
+export const FONT_PRESETS = [
+  { id: "Inter, system-ui, sans-serif", label: "Inter / системный" },
+  { id: "system-ui, sans-serif", label: "Системный" },
+  { id: "Georgia, 'Times New Roman', serif", label: "С засечками" },
+  { id: "ui-monospace, 'SF Mono', Menlo, monospace", label: "Моноширинный" },
+];
