@@ -1,17 +1,21 @@
 import { ArrowLeft, Redo2, SearchX, Undo2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import BlockLibrary from "@/components/modules/Editor/BlockLibrary/BlockLibrary";
 import Canvas from "@/components/modules/Editor/Canvas/Canvas";
+import EditorDnd from "@/components/modules/Editor/EditorDnd/EditorDnd";
+import Inspector from "@/components/modules/Editor/Inspector/Inspector";
+import LeftPanel from "@/components/modules/Editor/LeftPanel/LeftPanel";
+import ThemeEditor from "@/components/modules/Editor/ThemeEditor/ThemeEditor";
 import ViewportSwitcher from "@/components/modules/Editor/ViewportSwitcher/ViewportSwitcher";
 import EmptyState from "@/components/ui/EmptyState/EmptyState";
 import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
 import { ROUTES } from "@/constants/routes";
+import { HOTKEY_HINTS } from "@/editor/hotkeys";
 import { useEditorPage } from "./useEditorPage";
 
-/** Редактор. Инспектор, Outline, ⌘K и DnD подключаются на следующих этапах */
+/** Редактор: библиотека и структура слева, холст, справа свойства секции или настройки страницы */
 const EditorPage = () => {
-  const { status, document, canUndo, canRedo, undo, redo } = useEditorPage();
+  const { status, document, selectedSection, canUndo, canRedo, undo, redo } = useEditorPage();
 
   if (status === "loading") return <PageLoader />;
 
@@ -53,6 +57,7 @@ const EditorPage = () => {
           onClick={undo}
           disabled={!canUndo}
           aria-label="Отменить"
+          title={`Отменить (${HOTKEY_HINTS.undo})`}
         >
           <Undo2 className="size-4" aria-hidden />
         </Button>
@@ -62,6 +67,7 @@ const EditorPage = () => {
           onClick={redo}
           disabled={!canRedo}
           aria-label="Повторить"
+          title={`Повторить (${HOTKEY_HINTS.redo})`}
         >
           <Redo2 className="size-4" aria-hidden />
         </Button>
@@ -72,8 +78,20 @@ const EditorPage = () => {
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <BlockLibrary />
-        <Canvas />
+        <EditorDnd>
+          <LeftPanel />
+          <Canvas />
+        </EditorDnd>
+        <aside
+          aria-label={selectedSection ? "Свойства секции" : "Настройки страницы"}
+          className="w-80 shrink-0 overflow-y-auto border-l border-[var(--color-border)]"
+        >
+          {selectedSection ? (
+            <Inspector key={selectedSection.id} section={selectedSection} />
+          ) : (
+            <ThemeEditor />
+          )}
+        </aside>
       </div>
     </>
   );
