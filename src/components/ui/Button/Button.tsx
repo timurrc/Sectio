@@ -6,12 +6,14 @@ const VARIANTS = {
   primary: "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)]",
   outline:
     "border border-[var(--color-border)] bg-transparent text-[var(--color-text)] hover:bg-[var(--color-surface)]",
+  secondary: "bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-border)]",
   ghost: "bg-transparent text-[var(--color-text)] hover:bg-[var(--color-surface)]",
 } as const;
 
 const SIZES = {
-  sm: "h-8 px-3 text-sm",
-  md: "h-10 px-4",
+  sm: "h-8 px-3.5 text-sm",
+  md: "h-10 px-5",
+  icon: "size-8 text-sm",
 } as const;
 
 interface ButtonProps extends ComponentProps<"button"> {
@@ -34,7 +36,7 @@ const Button = ({
       type="button"
       disabled={disabled || isLoading}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
         VARIANTS[variant],
         SIZES[size],
         className,

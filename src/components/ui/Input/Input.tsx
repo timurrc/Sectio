@@ -25,7 +25,7 @@ const Input = ({ label, error, id, className, ...props }: InputProps) => {
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         className={cn(
-          "h-10 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] px-3 transition-colors outline-none focus:border-[var(--color-primary)]",
+          "h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg)] px-3 transition-colors outline-none focus:border-[var(--color-primary)]",
           error && "border-[var(--color-danger)]",
           className,
         )}

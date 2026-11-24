@@ -6,20 +6,31 @@
   static — переменные попадают в CSS всегда, даже если класс ещё нигде не использован.
 */
 @theme static {
-  --color-primary: #aa3bff;
-  --color-primary-hover: #9426ea;
-  --color-text: #08060d;
-  --color-muted: #6b6375;
-  --color-border: #e5e4e7;
+  --color-primary: #ff4d00;
+  --color-primary-hover: #e64500;
+  --color-text: #222222;
+  --color-muted: #6f6f6f;
+  --color-border: #e6e6e6;
   --color-bg: #ffffff;
-  --color-surface: #f6f5f8;
+  --color-surface: #f5f5f5;
   --color-danger: #e5484d;
 
-  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: Geist, Arial, system-ui, sans-serif;
+}
+
+/* Тёмная тема хрома редактора. Блоки лендинга живут в iframe со своими токенами и не затрагиваются */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #f2f2f2;
+    --color-muted: #9a9a9f;
+    --color-border: #2a2a2e;
+    --color-bg: #0b0b0c;
+    --color-surface: #141416;
+  }
 }
 
 @layer base {
   body {
-    @apply bg-[var(--color-bg)] font-sans text-[var(--color-text)] antialiased;
+    @apply bg-[var(--color-bg)] font-sans text-[15px] text-[var(--color-text)] antialiased;
   }
 }
