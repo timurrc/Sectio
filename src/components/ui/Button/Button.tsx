@@ -3,7 +3,8 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 const VARIANTS = {
-  primary: "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)]",
+  primary:
+    "bg-[var(--color-primary-strong)] text-white hover:bg-[var(--color-primary-strong-hover)]",
   outline:
     "border border-[var(--color-border)] bg-transparent text-[var(--color-text)] hover:bg-[var(--color-surface)]",
   secondary: "bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-border)]",

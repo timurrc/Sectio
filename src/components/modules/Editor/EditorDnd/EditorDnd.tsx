@@ -9,12 +9,15 @@ import {
   pointerWithin,
   useSensor,
   useSensors,
+  type Announcements,
   type CollisionDetection,
   type DragStartEvent,
+  type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { getBlock } from "@/blocks/registry";
 import type { DragData } from "@/editor/dnd";
+import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 import type { BlockType } from "@/types/document.types";
 
@@ -26,6 +29,33 @@ const collisionDetection: CollisionDetection = (args) => {
   const data = args.active.data.current as DragData | undefined;
   if (data?.kind === "library") return pointerWithin(args);
   return closestCenter(args);
+};
+
+/** Название для озвучки: блок из библиотеки или секция по id */
+const nameOf = (id: UniqueIdentifier, data?: unknown) => {
+  const drag = data as DragData | undefined;
+  if (drag?.kind === "library") return `блок «${getBlock(drag.type).name}»`;
+  const section = useDocumentStore.getState().document?.sections.find((item) => item.id === id);
+  return section ? `секция «${getBlock(section.type).name}»` : "холст";
+};
+
+/** Озвучка перетаскивания для скринридеров: по-русски и с названиями блоков, а не id */
+const announcements: Announcements = {
+  onDragStart: ({ active }) => `Взято: ${nameOf(active.id, active.data.current)}.`,
+  onDragOver: ({ active, over }) =>
+    over
+      ? `${nameOf(active.id, active.data.current)} — над: ${nameOf(over.id)}.`
+      : `${nameOf(active.id, active.data.current)} — вне списка.`,
+  onDragEnd: ({ active, over }) =>
+    over
+      ? `${nameOf(active.id, active.data.current)} — на месте: ${nameOf(over.id)}.`
+      : `${nameOf(active.id, active.data.current)} — отпущено.`,
+  onDragCancel: ({ active }) => `Перемещение отменено: ${nameOf(active.id, active.data.current)}.`,
+};
+
+const screenReaderInstructions = {
+  draggable:
+    "Чтобы переместить секцию, нажмите пробел. Стрелки вверх и вниз меняют место, пробел опускает, Escape отменяет.",
 };
 
 /**
@@ -54,6 +84,7 @@ const EditorDnd = ({ children }: { children: ReactNode }) => {
   return (
     <DndContext
       sensors={sensors}
+      accessibility={{ announcements, screenReaderInstructions }}
       collisionDetection={collisionDetection}
       // Зона сброса над холстом появляется уже после старта перетаскивания — меряем всегда
       measuring={{ droppable: { strategy: MeasuringStrategy.Always } }}

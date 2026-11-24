@@ -86,7 +86,7 @@ const EditorPage = () => {
           action={
             <Link
               to={ROUTES.HOME}
-              className="inline-flex h-10 items-center rounded-full bg-[var(--color-primary)] px-5 font-medium text-white hover:bg-[var(--color-primary-hover)]"
+              className="inline-flex h-10 items-center rounded-full bg-[var(--color-primary-strong)] px-5 font-medium text-white hover:bg-[var(--color-primary-strong-hover)]"
             >
               К списку проектов
             </Link>
@@ -119,6 +119,7 @@ const EditorPage = () => {
           variant="outline"
           size="sm"
           onClick={openPalette}
+          aria-label={`Блоки, действия и шаблоны ${HOTKEY_HINTS.palette}`}
           aria-keyshortcuts="Meta+K Control+K"
           {...{ [PALETTE_TRIGGER_ATTR]: "" }}
           title={`Блоки, действия и шаблоны (${HOTKEY_HINTS.palette})`}

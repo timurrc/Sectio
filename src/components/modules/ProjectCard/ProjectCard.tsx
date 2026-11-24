@@ -40,7 +40,7 @@ const ProjectCard = ({ title, updatedAt, onOpen, onDelete }: ProjectCardProps) =
             </Button>
             <Button
               size="sm"
-              className="bg-[var(--color-danger)] hover:opacity-90"
+              className="bg-[var(--color-danger-strong)] hover:opacity-90"
               onClick={onDelete}
             >
               Удалить

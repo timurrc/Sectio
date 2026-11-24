@@ -6,7 +6,7 @@ const NotFoundPage = () => {
     <section className="flex flex-col items-center gap-4 py-16 text-center">
       <h1 className="text-5xl font-medium">404</h1>
       <p className="text-[var(--color-muted)]">Страница не найдена</p>
-      <Link to={ROUTES.HOME} className="text-[var(--color-primary)]">
+      <Link to={ROUTES.HOME} className="text-[var(--color-primary-text)]">
         На главную
       </Link>
     </section>
