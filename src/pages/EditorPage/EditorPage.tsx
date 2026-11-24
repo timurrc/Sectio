@@ -1,4 +1,15 @@
-import { ArrowLeft, Download, ExternalLink, Redo2, Search, SearchX, Undo2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  ExternalLink,
+  FileWarning,
+  type LucideIcon,
+  Monitor,
+  Redo2,
+  Search,
+  SearchX,
+  Undo2,
+} from "lucide-react";
 import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import Canvas from "@/components/modules/Editor/Canvas/Canvas";
@@ -14,12 +25,34 @@ import PageLoader from "@/components/ui/PageLoader/PageLoader";
 import SegmentedControl from "@/components/ui/SegmentedControl/SegmentedControl";
 import { ROUTES } from "@/constants/routes";
 import { HOTKEY_HINTS } from "@/editor/hotkeys";
-import { EDITOR_TABS, useEditorPage } from "./useEditorPage";
+import { EDITOR_MIN_WIDTH, EDITOR_TABS, useEditorPage } from "./useEditorPage";
+
+import { PALETTE_TRIGGER_ATTR } from "@/components/modules/Editor/CommandPalette/useCommandPalette";
 
 // fuse.js и сама палитра грузятся при первом ⌘K
 const CommandPalette = lazy(
   () => import("@/components/modules/Editor/CommandPalette/CommandPalette"),
 );
+
+/** Экраны вместо редактора: что случилось и почему */
+const STATUS_SCREENS = {
+  "not-found": {
+    icon: SearchX,
+    title: "Проект не найден",
+    description: "Возможно, он был удалён или открыт в другом браузере.",
+  },
+  corrupt: {
+    icon: FileWarning,
+    title: "Проект не удалось открыть",
+    description:
+      "Данные проекта повреждены или сохранены более новой версией Sectio. Удалить его можно в списке проектов.",
+  },
+  narrow: {
+    icon: Monitor,
+    title: "Редактору нужен экран пошире",
+    description: `Откройте проект на компьютере или растяните окно до ${EDITOR_MIN_WIDTH} px: панели блоков, холст и свойства не помещаются на узком экране.`,
+  },
+} satisfies Record<string, { icon: LucideIcon; title: string; description: string }>;
 
 /** Редактор: библиотека и структура слева, холст, справа свойства секции или настройки страницы */
 const EditorPage = () => {
@@ -42,13 +75,14 @@ const EditorPage = () => {
 
   if (status === "loading") return <PageLoader />;
 
-  if (status === "not-found" || !document) {
+  if (status !== "ready" || !document) {
+    const { icon, title, description } = STATUS_SCREENS[status === "ready" ? "not-found" : status];
     return (
       <section className="flex flex-1 items-center justify-center">
         <EmptyState
-          icon={SearchX}
-          title="Проект не найден"
-          description="Возможно, он был удалён или открыт в другом браузере."
+          icon={icon}
+          title={title}
+          description={description}
           action={
             <Link
               to={ROUTES.HOME}
@@ -86,6 +120,7 @@ const EditorPage = () => {
           size="sm"
           onClick={openPalette}
           aria-keyshortcuts="Meta+K Control+K"
+          {...{ [PALETTE_TRIGGER_ATTR]: "" }}
           title={`Блоки, действия и шаблоны (${HOTKEY_HINTS.palette})`}
         >
           <Search className="size-4" aria-hidden />

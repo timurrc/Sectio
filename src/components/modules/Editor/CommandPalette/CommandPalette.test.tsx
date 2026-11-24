@@ -5,6 +5,7 @@ import { createDocument, createSection } from "@/editor/documentFactory";
 import { useDocumentStore } from "@/store/document.store";
 import { useEditorStore } from "@/store/editor.store";
 import CommandPalette from "./CommandPalette";
+import { PALETTE_TRIGGER_ATTR } from "./useCommandPalette";
 
 const types = () => useDocumentStore.getState().document?.sections.map((s) => s.type);
 
@@ -60,5 +61,27 @@ describe("CommandPalette", () => {
     render(<CommandPalette />);
     await user.type(screen.getByRole("combobox"), "zzqxw");
     expect(screen.getByText(/Ничего не нашлось/)).toBeInTheDocument();
+  });
+
+  it("если поле, откуда открыли палитру, исчезло, фокус уходит на кнопку палитры", async () => {
+    const user = userEvent.setup();
+    const Harness = ({ open, withField }: { open: boolean; withField: boolean }) => (
+      <>
+        <button type="button" {...{ [PALETTE_TRIGGER_ATTR]: "" }}>
+          ⌘K
+        </button>
+        {withField && <input aria-label="Поле инспектора" />}
+        {open && <CommandPalette />}
+      </>
+    );
+    const { rerender } = render(<Harness open={false} withField />);
+    await user.click(screen.getByRole("textbox", { name: "Поле инспектора" }));
+
+    rerender(<Harness open withField />);
+    // Вставка блока пересоздаёт инспектор: поле, где был фокус, пропадает
+    rerender(<Harness open withField={false} />);
+    rerender(<Harness open={false} withField={false} />);
+
+    expect(screen.getByRole("button", { name: "⌘K" })).toHaveFocus();
   });
 });

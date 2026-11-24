@@ -3,6 +3,9 @@ import { getPaletteItems, type IPaletteItem } from "@/editor/palette";
 import { searchItems } from "@/editor/search";
 import { useEditorStore } from "@/store/editor.store";
 
+/** Атрибут кнопки, открывающей палитру: на неё возвращается фокус */
+export const PALETTE_TRIGGER_ATTR = "data-palette-trigger";
+
 /** Сколько пунктов показываем: длинный хвост нечёткого поиска только мешает */
 const MAX_RESULTS = 40;
 
@@ -16,12 +19,16 @@ export const useCommandPalette = () => {
   const results = useMemo(() => searchItems(items, query).slice(0, MAX_RESULTS), [items, query]);
   const activeItem = results[Math.min(activeIndex, results.length - 1)];
 
-  // Фокус возвращается туда, откуда палитру открыли
+  // Фокус возвращается туда, откуда палитру открыли. Если того элемента уже нет
+  // (вставка блока пересоздала инспектор) — на кнопку палитры, а не в никуда
   const returnFocus = useRef<Element | null>(null);
   useEffect(() => {
     returnFocus.current = document.activeElement;
     return () => {
-      if (returnFocus.current instanceof HTMLElement) returnFocus.current.focus();
+      const target = returnFocus.current?.isConnected
+        ? returnFocus.current
+        : document.querySelector(`[${PALETTE_TRIGGER_ATTR}]`);
+      if (target instanceof HTMLElement) target.focus();
     };
   }, []);
 

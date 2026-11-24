@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useStore } from "zustand";
-import { openDocument, startDocumentAutosave } from "@/editor/documentPersistence";
+import { type OpenResult, openDocument, startDocumentAutosave } from "@/editor/documentPersistence";
 import { downloadProjectZip, openProjectInStackBlitz } from "@/editor/exportProject";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useEditorHotkeys } from "@/hooks/useEditorHotkeys";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { selectSection, useDocumentStore } from "@/store/document.store";
 import { type EditorTab, useEditorStore } from "@/store/editor.store";
 
-type Status = "loading" | "ready" | "not-found";
+type Status = "loading" | "ready" | "not-found" | "corrupt" | "narrow";
+
+/** Уже этой ширины три панели редактора не помещаются */
+export const EDITOR_MIN_WIDTH = 1024;
 type ExportTarget = "zip" | "stackblitz";
 
 export const EDITOR_TABS: { id: EditorTab; label: string }[] = [
@@ -20,7 +25,7 @@ const EXPORTERS = { zip: downloadProjectZip, stackblitz: openProjectInStackBlitz
 
 export const useEditorPage = () => {
   const { id = "" } = useParams();
-  const [loadedId, setLoadedId] = useState<{ id: string; found: boolean } | null>(null);
+  const [loaded, setLoaded] = useState<{ id: string; status: OpenResult["status"] } | null>(null);
   const document = useDocumentStore((state) => state.document);
   const selectedId = useEditorStore((state) => state.selectedId);
   const tab = useEditorStore((state) => state.tab);
@@ -36,8 +41,12 @@ export const useEditorPage = () => {
 
   useEffect(() => {
     let cancelled = false;
-    openDocument(id).then((found) => {
-      if (!cancelled) setLoadedId({ id, found });
+    openDocument(id).then((result) => {
+      if (cancelled) return;
+      setLoaded({ id, status: result.status });
+      if (result.status === "ok" && result.skippedTypes.length > 0) {
+        toast.error(`Пропущены секции неизвестных блоков: ${result.skippedTypes.join(", ")}`);
+      }
     });
     return () => {
       cancelled = true;
@@ -45,8 +54,18 @@ export const useEditorPage = () => {
     };
   }, [id]);
 
-  const status: Status =
-    loadedId?.id !== id ? "loading" : loadedId.found && document ? "ready" : "not-found";
+  const isWide = useMediaQuery(`(min-width: ${EDITOR_MIN_WIDTH}px)`);
+  useDocumentTitle(document?.meta.title);
+
+  const status: Status = !isWide
+    ? "narrow"
+    : loaded?.id !== id
+      ? "loading"
+      : loaded.status === "ok"
+        ? document
+          ? "ready"
+          : "not-found"
+        : loaded.status;
 
   useEditorHotkeys(status === "ready");
 
