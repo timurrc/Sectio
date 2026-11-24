@@ -8,9 +8,9 @@ A visual landing page builder: assemble a page from sections and export a ready 
 
 [Русский](README.md) · **English**
 
-[Report a bug](../../issues)
+[Demo](https://sectio-navy.vercel.app) · [Changelog](CHANGELOG.md) · [Releases](../../releases) · [Report a bug](../../issues)
 
-![CI](https://img.shields.io/github/actions/workflow/status/timurrc/Sectio/ci.yml?branch=main&label=CI)
+[![CI](https://github.com/timurrc/Sectio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/timurrc/Sectio/actions/workflows/ci.yml)
 
 <img src="docs/demo.gif" width="800" alt="Building a landing page in Sectio: template, text edit, dark section, drag and drop, ⌘K palette and code" />
 
