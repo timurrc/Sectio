@@ -1,23 +1,97 @@
-import { ArrowLeft, Redo2, Undo2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  ExternalLink,
+  FileWarning,
+  type LucideIcon,
+  Monitor,
+  Redo2,
+  Search,
+  SearchX,
+  Undo2,
+} from "lucide-react";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
+import Canvas from "@/components/modules/Editor/Canvas/Canvas";
+import CodeView from "@/components/modules/Editor/CodeView/CodeView";
+import EditorDnd from "@/components/modules/Editor/EditorDnd/EditorDnd";
+import Inspector from "@/components/modules/Editor/Inspector/Inspector";
+import LeftPanel from "@/components/modules/Editor/LeftPanel/LeftPanel";
+import ThemeEditor from "@/components/modules/Editor/ThemeEditor/ThemeEditor";
+import ViewportSwitcher from "@/components/modules/Editor/ViewportSwitcher/ViewportSwitcher";
+import EmptyState from "@/components/ui/EmptyState/EmptyState";
 import Button from "@/components/ui/Button/Button";
 import PageLoader from "@/components/ui/PageLoader/PageLoader";
+import SegmentedControl from "@/components/ui/SegmentedControl/SegmentedControl";
 import { ROUTES } from "@/constants/routes";
-import { useEditorPage } from "./useEditorPage";
+import { HOTKEY_HINTS } from "@/editor/hotkeys";
+import { EDITOR_MIN_WIDTH, EDITOR_TABS, useEditorPage } from "./useEditorPage";
 
-/** Каркас редактора. Канвас, инспектор и палитра подключаются на следующих этапах */
+import { PALETTE_TRIGGER_ATTR } from "@/components/modules/Editor/CommandPalette/useCommandPalette";
+
+// fuse.js и сама палитра грузятся при первом ⌘K
+const CommandPalette = lazy(
+  () => import("@/components/modules/Editor/CommandPalette/CommandPalette"),
+);
+
+/** Экраны вместо редактора: что случилось и почему */
+const STATUS_SCREENS = {
+  "not-found": {
+    icon: SearchX,
+    title: "Проект не найден",
+    description: "Возможно, он был удалён или открыт в другом браузере.",
+  },
+  corrupt: {
+    icon: FileWarning,
+    title: "Проект не удалось открыть",
+    description:
+      "Данные проекта повреждены или сохранены более новой версией Sectio. Удалить его можно в списке проектов.",
+  },
+  narrow: {
+    icon: Monitor,
+    title: "Редактору нужен экран пошире",
+    description: `Откройте проект на компьютере или растяните окно до ${EDITOR_MIN_WIDTH} px: панели блоков, холст и свойства не помещаются на узком экране.`,
+  },
+} satisfies Record<string, { icon: LucideIcon; title: string; description: string }>;
+
+/** Редактор: библиотека и структура слева, холст, справа свойства секции или настройки страницы */
 const EditorPage = () => {
-  const { status, document, canUndo, canRedo, undo, redo } = useEditorPage();
+  const {
+    status,
+    document,
+    selectedSection,
+    tab,
+    setTab,
+    exporting,
+    downloadZip,
+    openStackBlitz,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    paletteOpen,
+    openPalette,
+  } = useEditorPage();
 
   if (status === "loading") return <PageLoader />;
 
-  if (status === "not-found" || !document) {
+  if (status !== "ready" || !document) {
+    const { icon, title, description } = STATUS_SCREENS[status === "ready" ? "not-found" : status];
     return (
-      <section className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
-        <p className="text-[var(--color-muted)]">Проект не найден</p>
-        <Link to={ROUTES.HOME} className="text-[var(--color-primary)]">
-          К списку проектов
-        </Link>
+      <section className="flex flex-1 items-center justify-center">
+        <EmptyState
+          icon={icon}
+          title={title}
+          description={description}
+          action={
+            <Link
+              to={ROUTES.HOME}
+              className="inline-flex h-10 items-center rounded-full bg-[var(--color-primary-strong)] px-5 font-medium text-white hover:bg-[var(--color-primary-strong-hover)]"
+            >
+              К списку проектов
+            </Link>
+          }
+        />
       </section>
     );
   }
@@ -32,18 +106,92 @@ const EditorPage = () => {
         >
           <ArrowLeft className="size-4" aria-hidden />
         </Link>
-        <h1 className="flex-1 truncate font-medium">{document.meta.title}</h1>
-        <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo} aria-label="Отменить">
+        <h1 className="flex-1 truncate font-semibold">{document.meta.title}</h1>
+        <SegmentedControl
+          label="Режим"
+          value={tab}
+          items={EDITOR_TABS}
+          onChange={setTab}
+          className="w-48 shrink-0"
+        />
+        {tab === "preview" && <ViewportSwitcher />}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openPalette}
+          aria-label={`Блоки, действия и шаблоны ${HOTKEY_HINTS.palette}`}
+          aria-keyshortcuts="Meta+K Control+K"
+          {...{ [PALETTE_TRIGGER_ATTR]: "" }}
+          title={`Блоки, действия и шаблоны (${HOTKEY_HINTS.palette})`}
+        >
+          <Search className="size-4" aria-hidden />
+          <kbd className="font-sans text-[var(--color-muted)]">{HOTKEY_HINTS.palette}</kbd>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={undo}
+          disabled={!canUndo}
+          aria-label="Отменить"
+          title={`Отменить (${HOTKEY_HINTS.undo})`}
+        >
           <Undo2 className="size-4" aria-hidden />
         </Button>
-        <Button variant="ghost" size="sm" onClick={redo} disabled={!canRedo} aria-label="Повторить">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={redo}
+          disabled={!canRedo}
+          aria-label="Повторить"
+          title={`Повторить (${HOTKEY_HINTS.redo})`}
+        >
           <Redo2 className="size-4" aria-hidden />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openStackBlitz}
+          isLoading={exporting === "stackblitz"}
+          disabled={exporting !== null}
+          title="Открыть проект в StackBlitz в новой вкладке"
+        >
+          {exporting !== "stackblitz" && <ExternalLink className="size-4" aria-hidden />}
+          StackBlitz
+        </Button>
+        <Button
+          size="sm"
+          onClick={downloadZip}
+          isLoading={exporting === "zip"}
+          disabled={exporting !== null}
+          title="Скачать проект Vite + React + Tailwind zip-архивом"
+        >
+          {exporting !== "zip" && <Download className="size-4" aria-hidden />}
+          Экспорт
         </Button>
       </header>
 
-      <main className="flex flex-1 items-center justify-center text-[var(--color-muted)]">
-        Секций: {document.sections.length}
-      </main>
+      <div className="flex min-h-0 flex-1">
+        <EditorDnd>
+          <LeftPanel />
+          {tab === "preview" ? <Canvas /> : <CodeView />}
+        </EditorDnd>
+        <aside
+          aria-label={selectedSection ? "Свойства секции" : "Настройки страницы"}
+          className="w-80 shrink-0 overflow-y-auto border-l border-[var(--color-border)]"
+        >
+          {selectedSection ? (
+            <Inspector key={selectedSection.id} section={selectedSection} />
+          ) : (
+            <ThemeEditor />
+          )}
+        </aside>
+      </div>
+
+      {paletteOpen && (
+        <Suspense fallback={null}>
+          <CommandPalette />
+        </Suspense>
+      )}
     </>
   );
 };

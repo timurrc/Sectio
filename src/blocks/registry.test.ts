@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
+import type { BlockType } from "@/types/document.types";
 import { defineBlock, getBlock } from "./registry";
 
 const schema = z.object({ title: z.string().min(1) });
@@ -12,7 +13,7 @@ const base = {
   schema,
   defaults: { title: "Привет" },
   Component: () => null,
-  codegen: () => [],
+  codegen: async () => ({ default: () => [] }),
 };
 
 describe("defineBlock", () => {
@@ -31,6 +32,6 @@ describe("defineBlock", () => {
 
 describe("getBlock", () => {
   it("бросает понятную ошибку для незарегистрированного блока", () => {
-    expect(() => getBlock("pricing")).toThrow(/не зарегистрирован/);
+    expect(() => getBlock("unknown" as BlockType)).toThrow(/не зарегистрирован/);
   });
 });
