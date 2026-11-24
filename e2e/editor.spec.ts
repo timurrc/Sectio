@@ -218,4 +218,15 @@ test.describe("Редактор", () => {
       )
       .toMatch(/#16a34a/i);
   });
+
+  test("длинные пункты списка не распирают панель свойств", async ({ page }) => {
+    await createFromTemplate(page, "SaaS-продукт");
+    await preview(page).locator('[data-label="Отзывы"]').getByRole("heading").first().click();
+    await expect(inspector(page).getByText(/^Отзыв 1/)).toBeVisible();
+
+    const overflow = await inspector(page).evaluate(
+      (aside) => aside.scrollWidth - aside.clientWidth,
+    );
+    expect(overflow).toBe(0);
+  });
 });

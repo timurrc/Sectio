@@ -44,8 +44,9 @@ const ListField = ({ node, path, root, errors, onChange }: IFieldProps & { node:
     </Button>
   );
 
+  // min-w-0: у fieldset по умолчанию min-width: min-content, длинные строки распирали панель
   return (
-    <fieldset className="flex flex-col gap-2">
+    <fieldset className="flex min-w-0 flex-col gap-2">
       <legend className="mb-2 flex w-full items-baseline justify-between text-sm font-medium">
         {node.label}
         <span className="font-normal text-[var(--color-muted)]">
@@ -77,7 +78,7 @@ const ListField = ({ node, path, root, errors, onChange }: IFieldProps & { node:
                 className="size-4 shrink-0 text-[var(--color-muted)] transition-transform group-open:rotate-90"
                 aria-hidden
               />
-              <span className="truncate">
+              <span className="min-w-0 truncate">
                 {node.itemLabel} {index + 1}
                 {summaryOf(item) && (
                   <span className="text-[var(--color-muted)]"> · {summaryOf(item)}</span>
